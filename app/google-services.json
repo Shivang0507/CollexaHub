@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "708412228313-ulpo2qaecp9utvkhe912pgrom3fuit1d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.collexahub",
+            "certificate_hash": "a25c2eaeb6f764cba3f18b8ed02b9218fc401844"
+          }
+        },
+        {
           "client_id": "708412228313-8cuuh9cpfrsjdp54fdv3mpo0bjfmui91.apps.googleusercontent.com",
           "client_type": 3
         }
