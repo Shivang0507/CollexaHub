@@ -82,6 +82,7 @@ public class MainDashboardActivity extends AppCompatActivity
                 break;
         }
 
+
         loadMenuAndHome();
 
         getOnBackPressedDispatcher().addCallback(this,
@@ -137,8 +138,36 @@ public class MainDashboardActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        if (item.getItemId() == R.id.nav_logout) {
-            SessionManager sessionManager = new SessionManager(this);
+        int id = item.getItemId();
+        SessionManager sessionManager = new SessionManager(this);
+        String role = sessionManager.getRole();
+
+        if (id == R.id.nav_home) {
+
+            switch (role) {
+                case "admin":
+                    loadFragment(new AdminHomeFragment());
+                    break;
+
+                case "teacher":
+                    loadFragment(new TeacherHomeFragment());
+                    break;
+
+                case "volunteer":
+                    loadFragment(new VolunteerHomeFragment());
+                    break;
+
+                default:
+                    loadFragment(new StudentHomeFragment());
+                    break;
+            }
+        }
+
+        else if (id == R.id.nav_profile) {
+            loadFragment(new ProfileFragment());
+        }
+
+        else if (id == R.id.nav_logout) {
             sessionManager.logout();
             FirebaseAuth.getInstance().signOut();
 

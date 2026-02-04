@@ -15,6 +15,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/yellow_primary"
             android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -23,7 +24,8 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 android:title="Collexa Hub"
-                android:titleTextColor="@android:color/white" />
+                android:titleTextColor="@android:color/black"
+                app:titleTextColor="@color/black" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -41,7 +43,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header_main_dashboard"
-        app:menu="@menu/menu_student" />
+        app:menu="@menu/menu_student"
+        app:itemTextAppearance="@style/NavDrawerTextStyle"/>
 
 
 </androidx.drawerlayout.widget.DrawerLayout>
