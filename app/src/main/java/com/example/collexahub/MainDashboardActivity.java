@@ -3,6 +3,9 @@ package com.example.collexahub;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -21,6 +24,9 @@ public class MainDashboardActivity extends AppCompatActivity
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     MaterialToolbar toolbar;
+
+    ImageView headerImage;
+    TextView headerName, headerRole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +55,32 @@ public class MainDashboardActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
+
+        View headerView = navigationView.getHeaderView(0);
+        headerImage = headerView.findViewById(R.id.imageView);
+        headerName = headerView.findViewById(R.id.textViewName);
+        headerRole = headerView.findViewById(R.id.textViewRole);
+
+        String fullName = sessionManager.getName();
+        String role = sessionManager.getRole();
+
+        headerName.setText(fullName);
+        headerRole.setText(role.toUpperCase());
+
+        switch (role) {
+            case "admin":
+                headerImage.setImageResource(R.drawable.ic_admin);
+                break;
+            case "teacher":
+                headerImage.setImageResource(R.drawable.ic_admin);
+                break;
+            case "volunteer":
+                headerImage.setImageResource(R.drawable.ic_admin);
+                break;
+            default:
+                headerImage.setImageResource(R.drawable.ic_admin);
+                break;
+        }
 
         loadMenuAndHome();
 

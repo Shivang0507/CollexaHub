@@ -29,14 +29,6 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        SessionManager sessionManager = new SessionManager(this);
-        if (sessionManager.isLoggedin()) {
-            startActivity(new Intent(this, SplashActivity.class));
-            finish();
-            return;
-        }
-
         setContentView(R.layout.activity_login);
 
         etEmail = findViewById(R.id.etEmail);
@@ -47,8 +39,7 @@ public class Login extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         etSignup.setOnClickListener(v -> {
-            Intent intent = new Intent(Login.this, SignupActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(Login.this, SignupActivity.class));
             finish();
         });
 
@@ -73,73 +64,67 @@ public class Login extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
 
-                    if (task.isSuccessful()) {
-
-                        if (mAuth.getCurrentUser() == null) {
-                            btnLogin.setEnabled(true);
-                            Toast.makeText(this,
-                                    "Authentication failed",
-                                    Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        String uid = mAuth.getCurrentUser().getUid();
-                        DatabaseReference reference = FirebaseDatabase.getInstance(
-                                "https://collexa-hub-default-rtdb.asia-southeast1.firebasedatabase.app/"
-                        ).getReference("users").child(uid);
-                        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.exists()) {
-
-                                    if (!snapshot.exists() || !snapshot.hasChild("role")) {
-                                        Toast.makeText(Login.this,
-                                                "User role missing. Contact admin.",
-                                                Toast.LENGTH_LONG).show();
-                                        FirebaseAuth.getInstance().signOut();
-                                        return;
-                                    }
-
-                                    String role = snapshot.child("role").getValue(String.class);
-                                    if (role == null || role.isEmpty()) {
-                                        Toast.makeText(Login.this,
-                                                "User role not found",
-                                                Toast.LENGTH_LONG).show();
-                                        return;
-                                    }
-                                    SessionManager sessionManager = new SessionManager(Login.this);
-                                    sessionManager.createSession(role);
-
-                                    Toast.makeText(Login.this,
-                                            "Login Successful",
-                                            Toast.LENGTH_SHORT).show();
-
-                                    Intent intent =
-                                            new Intent(Login.this, SplashActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                            Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                    finish();
-
-                                } else {
-                                    Toast.makeText(Login.this,
-                                            "User data not found",
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                Toast.makeText(Login.this,
-                                        error.getMessage(),
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    } else {
-                        Toast.makeText(Login.this,
+                    if (!task.isSuccessful()) {
+                        Toast.makeText(this,
                                 task.getException().getMessage(),
                                 Toast.LENGTH_LONG).show();
+                        return;
                     }
+
+                    String uid = mAuth.getCurrentUser().getUid();
+
+                    DatabaseReference ref = FirebaseDatabase.getInstance(
+                            "https://collexa-hub-default-rtdb.asia-southeast1.firebasedatabase.app/"
+                    ).getReference("users").child(uid);
+
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                            if (!snapshot.exists()) {
+                                Toast.makeText(Login.this,
+                                        "User data not found",
+                                        Toast.LENGTH_LONG).show();
+                                return;
+                            }
+
+                            String fullName = snapshot.child("fullName").getValue(String.class);
+                            String role = snapshot.child("role").getValue(String.class);
+
+                            if (fullName == null || fullName.isEmpty()) {
+                                fullName = "User";
+                            }
+
+                            if (role == null || role.isEmpty()) {
+                                Toast.makeText(Login.this,
+                                        "User role missing. Contact admin.",
+                                        Toast.LENGTH_LONG).show();
+                                return;
+                            }
+
+                            SessionManager sessionManager =
+                                    new SessionManager(Login.this);
+                            sessionManager.createSession(fullName, role);
+
+                            Toast.makeText(Login.this,
+                                    "Login Successful",
+                                    Toast.LENGTH_SHORT).show();
+
+                            Intent intent =
+                                    new Intent(Login.this, SplashActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(Login.this,
+                                    error.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
                 });
     }
 }
