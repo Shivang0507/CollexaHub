@@ -79,7 +79,7 @@
     <style name="MainButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/_50sdp</item>
-        <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="android:textColor">@color/bg_screen_dark</item>
         <item name="android:backgroundTint">@color/yellow_primary</item>
         <item name="android:elevation">@dimen/_4sdp</item>
         <item name="android:textStyle">bold</item>

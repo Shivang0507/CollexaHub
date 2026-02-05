@@ -1,6 +1,93 @@
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:text="Admin Dashboard"
-    android:gravity="center"
-    android:textSize="22sp"/>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true"
+    style="@style/MainScrollView">
+
+    <LinearLayout
+        style="@style/SecondaryLinear"
+        android:padding="@dimen/_16sdp">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="2"
+            android:alignmentMode="alignMargins"
+            android:useDefaultMargins="true">
+
+            <!-- Card 1 -->
+            <androidx.cardview.widget.CardView
+                style="@style/CollexaCardView"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_250sdp"
+                android:layout_columnWeight="1"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Total Students"
+                    android:textSize="@dimen/_14sdp"
+                    android:gravity="center"
+                    />
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Card 2 -->
+            <androidx.cardview.widget.CardView
+                style="@style/CollexaCardView"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_250sdp"
+                android:layout_columnWeight="1">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Total Events"
+                    android:textSize="@dimen/_14sdp"
+                    android:gravity="center"/>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Card 3 -->
+            <androidx.cardview.widget.CardView
+                style="@style/CollexaCardView"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_250sdp"
+                android:layout_columnWeight="1">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Total Teachers"
+                    android:textSize="@dimen/_14sdp"
+                    android:gravity="center"/>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Card 4 -->
+            <androidx.cardview.widget.CardView
+                style="@style/CollexaCardView"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_250sdp"
+                android:layout_columnWeight="1"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Manage Admin"
+                    android:textSize="@dimen/_14sdp"
+                    android:gravity="center"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </GridLayout>
+
+        <Button
+            android:id="@+id/btnLogout"
+            style="@style/MainButton"
+            android:layout_margin="@dimen/_18sdp"
+            android:text="Logout"
+            />
+    </LinearLayout>
+
+</ScrollView>
