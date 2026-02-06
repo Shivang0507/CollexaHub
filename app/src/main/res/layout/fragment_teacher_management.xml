@@ -8,6 +8,15 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTeachers"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <Button
+        android:layout_marginHorizontal="@dimen/_6sdp"
+        android:layout_marginVertical="@dimen/_4sdp"
+        android:id="@+id/btnAddTeachcer"
+        android:layout_gravity="bottom"
+        style="@style/SecondButton"
+        android:text="Add Teacher"/>
 
 </LinearLayout>

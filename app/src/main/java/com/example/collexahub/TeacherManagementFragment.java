@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -26,6 +27,7 @@ public class TeacherManagementFragment extends Fragment {
     private TeacherAdapter adapter;
     private List<TeacherModel> teacherList;
     private DatabaseReference usersRef;
+    private Button btnAddTeachcer;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -44,6 +46,8 @@ public class TeacherManagementFragment extends Fragment {
                 });
 
         rvTeachers = view.findViewById(R.id.rvTeachers);
+        btnAddTeachcer = view.findViewById(R.id.btnAddTeachcer);
+
         rvTeachers.setLayoutManager(new LinearLayoutManager(getContext()));
 
         teacherList = new ArrayList<>();
@@ -55,6 +59,14 @@ public class TeacherManagementFragment extends Fragment {
                 .getReference("users");
 
         loadTeachers();
+
+        btnAddTeachcer.setOnClickListener(v -> {
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new AddTeacherFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         return view;
     }
