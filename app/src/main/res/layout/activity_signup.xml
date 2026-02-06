@@ -54,6 +54,7 @@
                 <EditText
                     android:id="@+id/etMobile"
                     style="@style/PrimaryEditText"
+                    android:maxLength="10"
                     android:hint="Mobile Number"
                     android:inputType="phone"
                     />

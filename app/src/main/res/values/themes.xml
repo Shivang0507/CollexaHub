@@ -99,6 +99,25 @@
 
     </style>
 
+    <style name="SecondButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/_40sdp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:backgroundTint">@color/yellow_primary</item>
+        <item name="android:elevation">@dimen/_4sdp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/_12sdp</item>
+        <item name="cornerRadius">@dimen/_6sdp</item>
+    </style>
+
+    <style name="SecondaryCollexaCardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">@dimen/_8sdp</item>
+        <item name="cardElevation">@dimen/_8sdp</item>
+        <item name="cardBackgroundColor">@color/bg_card_dark</item>
+        <item name="paddingStart">@dimen/_20sdp</item>
+        <item name="paddingEnd">@dimen/_20sdp</item>
+    </style>
+
     <style name="Theme.CollexaHub.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

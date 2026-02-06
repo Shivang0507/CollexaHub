@@ -89,13 +89,20 @@ public class MainDashboardActivity extends AppCompatActivity
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
+
                         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                             drawerLayout.closeDrawer(GravityCompat.START);
+                            return;
+                        }
+
+                        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                            getSupportFragmentManager().popBackStack();
                         } else {
                             finish();
                         }
                     }
                 });
+
     }
 
     private void loadMenuAndHome() {
@@ -164,9 +171,13 @@ public class MainDashboardActivity extends AppCompatActivity
         }
 
         else if (id == R.id.nav_profile) {
-            loadFragment(new ProfileFragment());
-        }
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new ProfileFragment())
+                    .addToBackStack(null)
+                    .commit();
 
+        }
         else if (id == R.id.nav_logout) {
             sessionManager.logout();
             FirebaseAuth.getInstance().signOut();
@@ -180,5 +191,8 @@ public class MainDashboardActivity extends AppCompatActivity
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+
+
     }
+
 }

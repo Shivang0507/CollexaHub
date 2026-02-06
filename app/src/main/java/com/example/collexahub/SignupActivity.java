@@ -84,6 +84,10 @@ public class SignupActivity extends AppCompatActivity {
             etMobile.setError("Required");
             return;
         }
+        if (mobile.length() != 10) {
+            etMobile.setError("Mobile number must be 10 digits");
+            return;
+        }
 
         if (!mobile.matches("^[6-9][0-9]{9}$")) {
             etMobile.setError("Invalid Indian number");
@@ -155,7 +159,7 @@ public class SignupActivity extends AppCompatActivity {
                             .child(uid)
                             .setValue(user)
                             .addOnSuccessListener(unused -> {
-                                Toast.makeText(this,
+                                  Toast.makeText(this,
                                         "Signup successful. Please login.",
                                         Toast.LENGTH_SHORT).show();
 
