@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    style="@style/MainScrollView">
+
+    <LinearLayout
+        style="@style/LinerLayout">
+
+        <!-- Card View -->
+        <androidx.cardview.widget.CardView
+            style="@style/CollexaCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                style="@style/SecondaryLinear">
+
+                <!-- Title -->
+                <TextView
+                    style="@style/LightTextViwe"
+                    android:text="Create New Event" />
+
+                <ImageView
+                    android:id="@+id/imgLogo"
+                    style="@style/MainImageView"/>
+
+                <!-- Event Title -->
+                <EditText
+                    android:id="@+id/etTitle"
+                    style="@style/PrimaryEditText"
+                    android:hint="Event Title" />
+
+                <!-- Description -->
+                <EditText
+                    android:id="@+id/etDescription"
+                    style="@style/PrimaryEditText"
+                    android:hint="Event Description"
+                    android:minLines="3"
+                    android:gravity="top"
+                    android:inputType="textMultiLine" />
+
+                <!-- Date -->
+                <EditText
+                    android:id="@+id/etDate"
+                    style="@style/PrimaryEditText"
+                    android:hint="Event Date (DD/MM/YYYY)"
+                    android:focusable="false"
+                    android:clickable="true"/>
+
+                <!-- Time -->
+                <EditText
+                    android:id="@+id/etTime"
+                    style="@style/PrimaryEditText"
+                    android:hint="Event Time (HH:MM)"
+                    android:focusable="false"
+                    android:clickable="true"/>
+
+                <!-- Venue -->
+                <EditText
+                    android:id="@+id/etVenue"
+                    style="@style/PrimaryEditText"
+                    android:hint="Venue / Location" />
+
+                <!-- Publish Button -->
+                <Button
+                    android:id="@+id/btnPublish"
+                    style="@style/SecondButton"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:text="Publish Event" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+</ScrollView>

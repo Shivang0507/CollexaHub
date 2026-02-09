@@ -22,8 +22,8 @@ public class SignupActivity extends AppCompatActivity {
     RadioGroup rgGender;
     Button btnSignup;
     TextView etLogin;
-    FirebaseAuth mAuth;
 
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,23 +55,8 @@ public class SignupActivity extends AppCompatActivity {
         String mobile = etMobile.getText().toString().trim();
         String password = etPassword.getText().toString();
 
-        if (TextUtils.isEmpty(fullName)) {
-            etFullName.setError("Required");
-            return;
-        }
-
-        if (fullName.length() < 3) {
-            etFullName.setError("Minimum 3 characters");
-            return;
-        }
-
-        if (!fullName.matches("^[a-zA-Z ]+$")) {
-            etFullName.setError("Only letters allowed");
-            return;
-        }
-
-        if (TextUtils.isEmpty(email)) {
-            etEmail.setError("Required");
+        if (TextUtils.isEmpty(fullName) || fullName.length() < 3 || !fullName.matches("^[a-zA-Z ]+$")) {
+            etFullName.setError("Enter valid full name");
             return;
         }
 
@@ -80,56 +65,26 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
 
-        if (TextUtils.isEmpty(mobile)) {
-            etMobile.setError("Required");
-            return;
-        }
-        if (mobile.length() != 10) {
-            etMobile.setError("Mobile number must be 10 digits");
-            return;
-        }
-
         if (!mobile.matches("^[6-9][0-9]{9}$")) {
-            etMobile.setError("Invalid Indian number");
+            etMobile.setError("Invalid Indian mobile number");
             return;
         }
 
-        int selectedGenderId = rgGender.getCheckedRadioButtonId();
-        if (selectedGenderId == -1) {
+        int genderId = rgGender.getCheckedRadioButtonId();
+        if (genderId == -1) {
             Toast.makeText(this, "Select gender", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        RadioButton rbGender = findViewById(selectedGenderId);
+        RadioButton rbGender = findViewById(genderId);
         String gender = rbGender.getText().toString();
 
-        if (TextUtils.isEmpty(password)) {
-            etPassword.setError("Required");
-            return;
-        }
-
-        if (password.length() < 8) {
-            etPassword.setError("Min 8 characters");
-            return;
-        }
-
-        if (!password.matches(".*[A-Z].*")) {
-            etPassword.setError("1 uppercase required");
-            return;
-        }
-
-        if (!password.matches(".*[a-z].*")) {
-            etPassword.setError("1 lowercase required");
-            return;
-        }
-
-        if (!password.matches(".*[0-9].*")) {
-            etPassword.setError("1 digit required");
-            return;
-        }
-
-        if (!password.matches(".*[@#$%^&+=!].*")) {
-            etPassword.setError("1 special character required");
+        if (password.length() < 8 ||
+                !password.matches(".*[A-Z].*") ||
+                !password.matches(".*[a-z].*") ||
+                !password.matches(".*[0-9].*") ||
+                !password.matches(".*[@#$%^&+=!].*")) {
+            etPassword.setError("Password not strong enough");
             return;
         }
 
@@ -143,7 +98,7 @@ public class SignupActivity extends AppCompatActivity {
                         return;
                     }
 
-                    String uid = mAuth.getCurrentUser().getUid();
+                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                     UserModel user = new UserModel(
                             fullName,
@@ -154,20 +109,23 @@ public class SignupActivity extends AppCompatActivity {
                     );
 
                     FirebaseDatabase
-                            .getInstance("https://collexa-hub-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                            .getInstance(
+                                    "https://collexa-hub-default-rtdb.asia-southeast1.firebasedatabase.app"
+                            )
                             .getReference("users")
                             .child(uid)
                             .setValue(user)
                             .addOnSuccessListener(unused -> {
-                                  Toast.makeText(this,
+                                Toast.makeText(this,
                                         "Signup successful. Please login.",
                                         Toast.LENGTH_SHORT).show();
-
-                                startActivity(new Intent(SignupActivity.this, Login.class));
+                                startActivity(new Intent(this, Login.class));
                                 finish();
                             })
                             .addOnFailureListener(e ->
-                                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show()
+                                    Toast.makeText(this,
+                                            "DB Error: " + e.getMessage(),
+                                            Toast.LENGTH_LONG).show()
                             );
                 });
     }

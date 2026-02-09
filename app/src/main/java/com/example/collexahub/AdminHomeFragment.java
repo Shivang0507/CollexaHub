@@ -19,7 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 public class AdminHomeFragment extends Fragment {
 
     private TextView tvTotalStudents, tvTotalTeachers;
-    private Button btnmanageStudent, btnmanageTeachers,btnmanageAdmin;
+    private Button btnmanageStudent, btnmanageTeachers,btnmanageAdmin,btnmanageEvents;
     private DatabaseReference usersRef;
 
     @Override
@@ -34,6 +34,7 @@ public class AdminHomeFragment extends Fragment {
         btnmanageStudent = view.findViewById(R.id.btnmanageStudent);
         btnmanageTeachers = view.findViewById(R.id.btnmanageTeachers);
         btnmanageAdmin = view.findViewById(R.id.btnmanageAdmin);
+        btnmanageEvents = view.findViewById(R.id.btnmanageEvents);
 
 
         FirebaseDatabase database = FirebaseDatabase.getInstance(
@@ -88,6 +89,17 @@ public class AdminHomeFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         });
+        btnmanageEvents.setOnClickListener(v -> {
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .replace(
+                            R.id.fragment_container,
+                            EventManagementFragment.newInstance("admin")
+                    )
+                    .addToBackStack(null)
+                    .commit();
+        });
+
 
 
         return view;

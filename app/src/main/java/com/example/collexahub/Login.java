@@ -71,31 +71,43 @@ public class Login extends AppCompatActivity {
                         return;
                     }
 
+                    if (mAuth.getCurrentUser() == null) {
+                        Toast.makeText(this,
+                                "Authentication failed",
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
                     String uid = mAuth.getCurrentUser().getUid();
 
                     DatabaseReference ref = FirebaseDatabase.getInstance(
-                            "https://collexa-hub-default-rtdb.asia-southeast1.firebasedatabase.app/"
-                    ).getReference("users").child(uid);
+                                    "https://collexa-hub-default-rtdb.asia-southeast1.firebasedatabase.app"
+                            )
+                            .getReference("users")
+                            .child(uid);
 
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
+
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                             if (!snapshot.exists()) {
                                 Toast.makeText(Login.this,
-                                        "User data not found",
+                                        "User profile not found. Please contact admin.",
                                         Toast.LENGTH_LONG).show();
                                 return;
                             }
 
-                            String fullName = snapshot.child("fullName").getValue(String.class);
-                            String role = snapshot.child("role").getValue(String.class);
+                            String fullName =
+                                    snapshot.child("fullName").getValue(String.class);
+                            String role =
+                                    snapshot.child("role").getValue(String.class);
 
-                            if (fullName == null || fullName.isEmpty()) {
+                            if (fullName == null || fullName.trim().isEmpty()) {
                                 fullName = "User";
                             }
 
-                            if (role == null || role.isEmpty()) {
+                            if (role == null || role.trim().isEmpty()) {
                                 Toast.makeText(Login.this,
                                         "User role missing. Contact admin.",
                                         Toast.LENGTH_LONG).show();
@@ -121,7 +133,7 @@ public class Login extends AppCompatActivity {
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
                             Toast.makeText(Login.this,
-                                    error.getMessage(),
+                                    "Database error: " + error.getMessage(),
                                     Toast.LENGTH_LONG).show();
                         }
                     });
