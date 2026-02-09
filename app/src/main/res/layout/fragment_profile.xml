@@ -58,7 +58,8 @@
                     android:layout_marginTop="12dp"/>
 
                 <Button
-                    style="@style/MainButton"
+                    android:layout_marginVertical="@dimen/_4sdp"
+                    style="@style/SecondButton"
                     android:id="@+id/btnUpdate"
                     android:text="Update Profile"
                     android:layout_marginTop="24dp"/>

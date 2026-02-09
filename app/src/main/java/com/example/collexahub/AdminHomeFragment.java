@@ -19,7 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 public class AdminHomeFragment extends Fragment {
 
     private TextView tvTotalStudents, tvTotalTeachers;
-    private Button btnmanageStudent, btnmanageTeachers;
+    private Button btnmanageStudent, btnmanageTeachers,btnmanageAdmin;
     private DatabaseReference usersRef;
 
     @Override
@@ -33,6 +33,8 @@ public class AdminHomeFragment extends Fragment {
         tvTotalTeachers = view.findViewById(R.id.tvTotalTeachers);
         btnmanageStudent = view.findViewById(R.id.btnmanageStudent);
         btnmanageTeachers = view.findViewById(R.id.btnmanageTeachers);
+        btnmanageAdmin = view.findViewById(R.id.btnmanageAdmin);
+
 
         FirebaseDatabase database = FirebaseDatabase.getInstance(
                 "https://collexa-hub-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -76,6 +78,13 @@ public class AdminHomeFragment extends Fragment {
             getParentFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, new TeacherManagementFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
+        btnmanageAdmin.setOnClickListener(v -> {
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new AdminManagementFragment())
                     .addToBackStack(null)
                     .commit();
         });

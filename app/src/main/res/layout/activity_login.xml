@@ -48,8 +48,9 @@
 
                 <!-- Login Button -->
                 <Button
+                    android:layout_marginVertical="@dimen/_4sdp"
                     android:id="@+id/btnLogin"
-                    style="@style/MainButton"
+                    style="@style/SecondButton"
                     android:text="Login"
                     />
 

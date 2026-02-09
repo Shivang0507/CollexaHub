@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        style="@style/SecondaryLinear">
+
+        <ScrollView
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <!-- Card View -->
+        <androidx.cardview.widget.CardView
+            style="@style/CollexaCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <LinearLayout
+                style="@style/SecondaryLinear">
+        <TextView
+            style="@style/LightTextViwe"
+            android:text="Collexa Hub"/>
+
+        <TextView
+            style="@style/SecondTextView"
+            android:text="Add New Admin"/>
+
+        <ImageView
+            android:id="@+id/imgLogo"
+            style="@style/MainImageView"/>
+
+        <EditText
+            android:id="@+id/etFullName"
+            style="@style/PrimaryEditText"
+            android:hint="Full Name"/>
+
+        <EditText
+            android:id="@+id/etEmail"
+            style="@style/PrimaryEditText"
+            android:hint="Email Address"
+            android:inputType="textEmailAddress"/>
+
+        <EditText
+            android:id="@+id/etMobile"
+            style="@style/PrimaryEditText"
+            android:hint="Mobile Number"
+            android:maxLength="10"
+            android:inputType="phone"/>
+
+        <RadioGroup
+            android:id="@+id/rgGender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_8sdp">
+
+            <RadioButton
+                style="@style/Radio"
+                android:text="Male"
+                android:layout_weight="1"/>
+
+            <RadioButton
+                style="@style/Radio"
+                android:text="Female"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/_12sdp"/>
+
+            <RadioButton
+                style="@style/Radio"
+                android:text="Other"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/_12sdp"/>
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/etPassword"
+            style="@style/PrimaryEditText"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:layout_marginTop="@dimen/_12sdp"/>
+
+        <Button
+            android:layout_marginVertical="@dimen/_4sdp"
+            android:id="@+id/btnSignup"
+            style="@style/SecondButton"
+            android:text="ADD ADMIN"/>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+        </ScrollView>
+    </LinearLayout>
+
+</ScrollView>
