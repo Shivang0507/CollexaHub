@@ -76,6 +76,19 @@
                 android:src="@android:drawable/ic_menu_delete" />
         </LinearLayout>
 
+        <!-- Register Button (STUDENT ONLY) -->
+        <Button
+            android:id="@+id/btnRegister"
+            style="@style/SecondButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Register"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/tvEventVenue"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

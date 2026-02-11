@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    style="@style/MainScrollView"
+    android:id="@+id/main">
+
+    <LinearLayout
+        style="@style/LinerLayout">
+
+        <!-- Card View -->
+        <androidx.cardview.widget.CardView
+            style="@style/CollexaCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                style="@style/SecondaryLinear">
+
+                <!-- Title -->
+                <TextView
+                    style="@style/LightTextViwe"
+                    android:text="Event Registration" />
+
+                <!-- Logo -->
+                <ImageView
+                    android:id="@+id/imgLogo"
+                    style="@style/MainImageView"/>
+
+                <!-- Name -->
+                <EditText
+                    android:id="@+id/etName"
+                    style="@style/PrimaryEditText"
+                    android:hint="Full Name"
+                    android:inputType="textPersonName" />
+
+                <!-- Email -->
+                <EditText
+                    android:id="@+id/etEmail"
+                    style="@style/PrimaryEditText"
+                    android:hint="Email Address"
+                    android:inputType="textEmailAddress" />
+
+                <!-- Phone -->
+                <EditText
+                    android:id="@+id/etPhone"
+                    style="@style/PrimaryEditText"
+                    android:hint="Phone Number"
+                    android:inputType="phone" />
+                <EditText
+                    android:id="@+id/etEnrollment"
+                    style="@style/PrimaryEditText"
+                    android:hint="Enrollment / Class" />
+
+                <!-- Department -->
+                <EditText
+                    android:id="@+id/etDepartment"
+                    style="@style/PrimaryEditText"
+                    android:hint="Department / Class" />
+
+                <EditText
+                    android:id="@+id/etSem"
+                    style="@style/PrimaryEditText"
+                    android:hint="Semester" />
+
+
+                <!-- Submit -->
+                <Button
+                    android:id="@+id/btnSubmitRegistration"
+                    style="@style/SecondButton"
+                    android:layout_marginVertical="@dimen/_4sdp"
+                    android:text="Submit Registration" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+</ScrollView>

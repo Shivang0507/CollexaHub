@@ -19,20 +19,22 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainDashboardActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        OnEventRegisterClickListener {
 
-    DrawerLayout drawerLayout;
-    NavigationView navigationView;
-    MaterialToolbar toolbar;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private MaterialToolbar toolbar;
 
-    ImageView headerImage;
-    TextView headerName, headerRole;
+    private ImageView headerImage;
+    private TextView headerName, headerRole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_dashboard);
 
+        // ---------------- SESSION CHECK ----------------
         SessionManager sessionManager = new SessionManager(this);
         if (!sessionManager.isLoggedin()) {
             FirebaseAuth.getInstance().signOut();
@@ -41,6 +43,7 @@ public class MainDashboardActivity extends AppCompatActivity
             return;
         }
 
+        // ---------------- UI INIT ----------------
         toolbar = findViewById(R.id.toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
@@ -48,43 +51,31 @@ public class MainDashboardActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar,
+                this,
+                drawerLayout,
+                toolbar,
                 R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close);
+                R.string.navigation_drawer_close
+        );
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
 
+        // ---------------- NAV HEADER ----------------
         View headerView = navigationView.getHeaderView(0);
         headerImage = headerView.findViewById(R.id.imageView);
         headerName = headerView.findViewById(R.id.textViewName);
         headerRole = headerView.findViewById(R.id.textViewRole);
 
-        String fullName = sessionManager.getName();
-        String role = sessionManager.getRole();
+        headerName.setText(sessionManager.getName());
+        headerRole.setText(sessionManager.getRole().toUpperCase());
+        headerImage.setImageResource(R.drawable.ic_admin);
 
-        headerName.setText(fullName);
-        headerRole.setText(role.toUpperCase());
-
-        switch (role) {
-            case "admin":
-                headerImage.setImageResource(R.drawable.ic_admin);
-                break;
-            case "teacher":
-                headerImage.setImageResource(R.drawable.ic_admin);
-                break;
-            case "volunteer":
-                headerImage.setImageResource(R.drawable.ic_admin);
-                break;
-            default:
-                headerImage.setImageResource(R.drawable.ic_admin);
-                break;
-        }
-
-
+        // ---------------- LOAD MENU + HOME ----------------
         loadMenuAndHome();
 
+        // ---------------- BACK PRESS HANDLING ----------------
         getOnBackPressedDispatcher().addCallback(this,
                 new OnBackPressedCallback(true) {
                     @Override
@@ -95,16 +86,17 @@ public class MainDashboardActivity extends AppCompatActivity
                             return;
                         }
 
-                        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                        if (getSupportFragmentManager()
+                                .getBackStackEntryCount() > 0) {
                             getSupportFragmentManager().popBackStack();
                         } else {
                             finish();
                         }
                     }
                 });
-
     }
 
+    // ---------------- LOAD HOME BASED ON ROLE ----------------
     private void loadMenuAndHome() {
 
         SessionManager sessionManager = new SessionManager(this);
@@ -135,6 +127,7 @@ public class MainDashboardActivity extends AppCompatActivity
         }
     }
 
+    // ---------------- FRAGMENT LOADER ----------------
     private void loadFragment(androidx.fragment.app.Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -142,6 +135,7 @@ public class MainDashboardActivity extends AppCompatActivity
                 .commit();
     }
 
+    // ---------------- NAVIGATION MENU ----------------
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -171,14 +165,27 @@ public class MainDashboardActivity extends AppCompatActivity
         }
 
         else if (id == R.id.nav_profile) {
+
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, new ProfileFragment())
                     .addToBackStack(null)
                     .commit();
-
         }
+
+        else if (id == R.id.nav_create_event) {
+
+            if ("admin".equalsIgnoreCase(role) ||
+                    "teacher".equalsIgnoreCase(role)) {
+
+                AddEventDialogFragment
+                        .newInstance(role)
+                        .show(getSupportFragmentManager(), "add_event");
+            }
+        }
+
         else if (id == R.id.nav_logout) {
+
             sessionManager.logout();
             FirebaseAuth.getInstance().signOut();
 
@@ -191,8 +198,19 @@ public class MainDashboardActivity extends AppCompatActivity
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
-
-
     }
 
+    // ---------------- REGISTER BUTTON CALLBACK ----------------
+    @Override
+    public void onRegisterClick(String eventId) {
+
+        EventRegistrationFragment fragment =
+                EventRegistrationFragment.newInstance(eventId);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
 }

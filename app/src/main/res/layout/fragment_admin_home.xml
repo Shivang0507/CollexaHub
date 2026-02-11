@@ -61,6 +61,7 @@
                     android:padding="@dimen/_12sdp">
 
                     <TextView
+                        android:id="@+id/tvTotalEvents"
                         android:text="0"
                         android:textSize="@dimen/_22sdp"
                         android:textStyle="bold"

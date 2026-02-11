@@ -14,7 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.*;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,8 +38,7 @@ public class EventManagementFragment extends Fragment {
 
     private DatabaseReference eventRef;
 
-    public EventManagementFragment() {
-    }
+    public EventManagementFragment() {}
 
     public static EventManagementFragment newInstance(String role) {
         EventManagementFragment fragment = new EventManagementFragment();
@@ -68,17 +71,32 @@ public class EventManagementFragment extends Fragment {
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_event_management, container, false);
+        View view = inflater.inflate(
+                R.layout.fragment_event_management,
+                container,
+                false
+        );
 
         recyclerView = view.findViewById(R.id.recyclerEvents);
         fabAddEvent = view.findViewById(R.id.fabAddEvent);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setHasFixedSize(false);
+
         eventList = new ArrayList<>();
-        adapter = new EventAdapter(eventList, userRole, currentUid);
+
+        // ✅ UPDATED ADAPTER (4th arg = null)
+        adapter = new EventAdapter(
+                eventList,
+                userRole,
+                currentUid,
+                null   // no register action for admin/teacher
+        );
         recyclerView.setAdapter(adapter);
 
-        if ("admin".equalsIgnoreCase(userRole) || "teacher".equalsIgnoreCase(userRole)) {
+        // FAB visibility
+        if ("admin".equalsIgnoreCase(userRole)
+                || "teacher".equalsIgnoreCase(userRole)) {
             fabAddEvent.setVisibility(View.VISIBLE);
         } else {
             fabAddEvent.setVisibility(View.GONE);
@@ -97,24 +115,29 @@ public class EventManagementFragment extends Fragment {
     private void loadEvents() {
         eventRef.orderByChild("timestamp")
                 .addValueEventListener(new ValueEventListener() {
+
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         eventList.clear();
+
                         for (DataSnapshot ds : snapshot.getChildren()) {
                             EventModel event = ds.getValue(EventModel.class);
                             if (event != null) {
                                 eventList.add(event);
                             }
                         }
+
                         Collections.reverse(eventList);
                         adapter.notifyDataSetChanged();
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(getContext(),
+                        Toast.makeText(
+                                getContext(),
                                 "Failed to load events",
-                                Toast.LENGTH_SHORT).show();
+                                Toast.LENGTH_SHORT
+                        ).show();
                     }
                 });
     }
