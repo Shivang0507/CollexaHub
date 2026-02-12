@@ -26,6 +26,8 @@ public class TeacherHomeFragment extends Fragment {
     private EventAdapter adapter;
     private List<EventModel> eventList;
 
+    private String currentUid; // ✅ ADD THIS
+
     @Nullable
     @Override
     public View onCreateView(
@@ -45,13 +47,17 @@ public class TeacherHomeFragment extends Fragment {
 
         eventList = new ArrayList<>();
 
-        // ✅ UPDATED ADAPTER (4 arguments)
+        // ✅ Initialize UID
+        currentUid = FirebaseAuth.getInstance().getUid();
+
+        // ✅ Correct 4-parameter constructor
         adapter = new EventAdapter(
                 eventList,
                 "teacher",
-                FirebaseAuth.getInstance().getUid(),
+                currentUid,
                 null   // teachers don't register
         );
+
         rvEvents.setAdapter(adapter);
 
         loadEvents();
@@ -60,6 +66,7 @@ public class TeacherHomeFragment extends Fragment {
     }
 
     private void loadEvents() {
+
         FirebaseDatabase.getInstance(
                         "https://collexa-hub-default-rtdb.asia-southeast1.firebasedatabase.app"
                 )
@@ -68,6 +75,7 @@ public class TeacherHomeFragment extends Fragment {
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                         eventList.clear();
 
                         for (DataSnapshot snap : snapshot.getChildren()) {

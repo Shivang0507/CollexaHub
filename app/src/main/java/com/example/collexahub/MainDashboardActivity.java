@@ -70,12 +70,13 @@ public class MainDashboardActivity extends AppCompatActivity
 
         headerName.setText(sessionManager.getName());
         headerRole.setText(sessionManager.getRole().toUpperCase());
+
         headerImage.setImageResource(R.drawable.ic_admin);
 
-        // ---------------- LOAD MENU + HOME ----------------
+        // ---------------- LOAD HOME ----------------
         loadMenuAndHome();
 
-        // ---------------- BACK PRESS HANDLING ----------------
+        // ---------------- BACK PRESS ----------------
         getOnBackPressedDispatcher().addCallback(this,
                 new OnBackPressedCallback(true) {
                     @Override
@@ -135,7 +136,7 @@ public class MainDashboardActivity extends AppCompatActivity
                 .commit();
     }
 
-    // ---------------- NAVIGATION MENU ----------------
+    // ---------------- NAVIGATION ----------------
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -200,12 +201,30 @@ public class MainDashboardActivity extends AppCompatActivity
         return true;
     }
 
-    // ---------------- REGISTER BUTTON CALLBACK ----------------
+    // =====================================================
+    // REGISTER BUTTON CLICK
+    // =====================================================
     @Override
     public void onRegisterClick(String eventId) {
 
         EventRegistrationFragment fragment =
                 EventRegistrationFragment.newInstance(eventId);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    // =====================================================
+    // MY QR BUTTON CLICK
+    // =====================================================
+    @Override
+    public void onMyQRClick(String qrCode) {
+
+        QRDisplayFragment fragment =
+                QRDisplayFragment.newInstance(qrCode);
 
         getSupportFragmentManager()
                 .beginTransaction()

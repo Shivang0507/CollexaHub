@@ -21,7 +21,7 @@
                     style="@style/LightTextViwe"
                     android:text="Event Registration" />
 
-                <!-- Logo -->
+                <!-- App Logo -->
                 <ImageView
                     android:id="@+id/imgLogo"
                     style="@style/MainImageView"/>
@@ -30,44 +30,46 @@
                 <EditText
                     android:id="@+id/etName"
                     style="@style/PrimaryEditText"
-                    android:hint="Full Name"
+                    android:hint="Full Name *"
                     android:inputType="textPersonName" />
 
                 <!-- Email -->
                 <EditText
                     android:id="@+id/etEmail"
                     style="@style/PrimaryEditText"
-                    android:hint="Email Address"
+                    android:hint="Email Address *"
                     android:inputType="textEmailAddress" />
 
                 <!-- Phone -->
                 <EditText
                     android:id="@+id/etPhone"
                     style="@style/PrimaryEditText"
-                    android:hint="Phone Number"
+                    android:hint="Phone Number *"
                     android:inputType="phone" />
+
+                <!-- Enrollment -->
                 <EditText
                     android:id="@+id/etEnrollment"
                     style="@style/PrimaryEditText"
-                    android:hint="Enrollment / Class" />
+                    android:hint="Enrollment Number *" />
 
                 <!-- Department -->
                 <EditText
                     android:id="@+id/etDepartment"
                     style="@style/PrimaryEditText"
-                    android:hint="Department / Class" />
+                    android:hint="Department" />
 
+                <!-- Semester -->
                 <EditText
                     android:id="@+id/etSem"
                     style="@style/PrimaryEditText"
-                    android:hint="Semester" />
-
+                    android:hint="Semester *" />
 
                 <!-- Submit -->
                 <Button
                     android:id="@+id/btnSubmitRegistration"
                     style="@style/SecondButton"
-                    android:layout_marginVertical="@dimen/_4sdp"
+                    android:layout_marginVertical="@dimen/_8sdp"
                     android:text="Submit Registration" />
 
             </LinearLayout>

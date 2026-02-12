@@ -1,22 +1,15 @@
 package com.example.collexahub;
 
-import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.*;
 
 import java.util.List;
 
@@ -25,7 +18,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     private final List<EventModel> list;
     private final String userRole;
     private final String currentUid;
-    private final OnEventRegisterClickListener registerListener;
+    private final OnEventRegisterClickListener listener;
 
     private static final String DB_URL =
             "https://collexa-hub-default-rtdb.asia-southeast1.firebasedatabase.app";
@@ -34,12 +27,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             List<EventModel> list,
             String userRole,
             String currentUid,
-            OnEventRegisterClickListener registerListener
+            OnEventRegisterClickListener listener
     ) {
         this.list = list;
         this.userRole = userRole;
         this.currentUid = currentUid;
-        this.registerListener = registerListener;
+        this.listener = listener;
     }
 
     @NonNull
@@ -59,55 +52,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.tvDate.setText(event.date + " | " + event.time);
         holder.tvVenue.setText(event.venue);
 
-        // -------- ADMIN / TEACHER --------
-        boolean canManage =
-                "admin".equalsIgnoreCase(userRole) ||
-                        "teacher".equalsIgnoreCase(userRole);
-
-        holder.layoutAdminActions.setVisibility(
-                canManage ? View.VISIBLE : View.GONE
-        );
-
-        holder.btnEdit.setOnClickListener(v ->
-                AddEventDialogFragment
-                        .newInstance(userRole, event)
-                        .show(
-                                ((MainDashboardActivity) v.getContext())
-                                        .getSupportFragmentManager(),
-                                "edit_event"
-                        )
-        );
-
-        holder.btnDelete.setOnClickListener(v ->
-                new AlertDialog.Builder(v.getContext())
-                        .setTitle("Delete Event")
-                        .setMessage("Are you sure you want to delete this event?")
-                        .setPositiveButton("Delete", (d, w) ->
-                                FirebaseDatabase.getInstance(DB_URL)
-                                        .getReference("events")
-                                        .child(event.eventId)
-                                        .removeValue()
-                        )
-                        .setNegativeButton("Cancel", null)
-                        .show()
-        );
-
-        // -------- STUDENT REGISTER --------
-        if ("student".equalsIgnoreCase(userRole)) {
-            holder.btnRegister.setVisibility(View.VISIBLE);
-            checkAlreadyRegistered(holder, event);
-        } else {
+        if (!"student".equalsIgnoreCase(userRole)) {
             holder.btnRegister.setVisibility(View.GONE);
+            holder.btnMyQR.setVisibility(View.GONE);
+            return;
         }
-
-        holder.btnRegister.setOnClickListener(v -> {
-            if (registerListener != null) {
-                registerListener.onRegisterClick(event.eventId);
-            }
-        });
-    }
-
-    private void checkAlreadyRegistered(EventViewHolder holder, EventModel event) {
 
         if (currentUid == null) return;
 
@@ -118,14 +67,36 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 .child(currentUid);
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 if (snapshot.exists()) {
-                    holder.btnRegister.setText("Registered");
-                    holder.btnRegister.setEnabled(false);
+
+                    // Already registered
+                    holder.btnRegister.setVisibility(View.GONE);
+                    holder.btnMyQR.setVisibility(View.VISIBLE);
+
+                    String qrCode =
+                            snapshot.child("qrCode").getValue(String.class);
+
+                    holder.btnMyQR.setOnClickListener(v -> {
+                        if (listener != null && qrCode != null) {
+                            listener.onMyQRClick(qrCode);
+                        }
+                    });
+
                 } else {
-                    holder.btnRegister.setText("Register");
-                    holder.btnRegister.setEnabled(true);
+
+                    // Not registered yet
+                    holder.btnRegister.setVisibility(View.VISIBLE);
+                    holder.btnMyQR.setVisibility(View.GONE);
+
+                    holder.btnRegister.setOnClickListener(v -> {
+                        if (listener != null) {
+                            listener.onRegisterClick(event.eventId);
+                        }
+                    });
                 }
             }
 
@@ -139,23 +110,20 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return list.size();
     }
 
-    // -------- VIEW HOLDER --------
     static class EventViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvTitle, tvDate, tvVenue;
-        LinearLayout layoutAdminActions;
-        ImageButton btnEdit, btnDelete;
-        Button btnRegister;
+        Button btnRegister, btnMyQR;
 
         EventViewHolder(@NonNull View itemView) {
             super(itemView);
+
             tvTitle = itemView.findViewById(R.id.tvEventTitle);
             tvDate = itemView.findViewById(R.id.tvEventDate);
             tvVenue = itemView.findViewById(R.id.tvEventVenue);
-            layoutAdminActions = itemView.findViewById(R.id.layoutAdminActions);
-            btnEdit = itemView.findViewById(R.id.btnEdit);
-            btnDelete = itemView.findViewById(R.id.btnDelete);
+
             btnRegister = itemView.findViewById(R.id.btnRegister);
+            btnMyQR = itemView.findViewById(R.id.btnMyQR);
         }
     }
 }

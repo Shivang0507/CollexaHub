@@ -54,7 +54,6 @@ public class EventRegistrationFragment extends Fragment {
 
         currentUid = FirebaseAuth.getInstance().getUid();
 
-        // Bind views
         etName = view.findViewById(R.id.etName);
         etEmail = view.findViewById(R.id.etEmail);
         etPhone = view.findViewById(R.id.etPhone);
@@ -77,30 +76,37 @@ public class EventRegistrationFragment extends Fragment {
         String department = etDepartment.getText().toString().trim();
         String sem = etSem.getText().toString().trim();
 
-        // Basic validation
         if (TextUtils.isEmpty(name)
                 || TextUtils.isEmpty(email)
                 || TextUtils.isEmpty(phone)
                 || TextUtils.isEmpty(enrollment)
                 || TextUtils.isEmpty(sem)) {
 
-            Toast.makeText(
-                    getContext(),
-                    "Please fill all required fields",
-                    Toast.LENGTH_SHORT
-            ).show();
+            Toast.makeText(getContext(),
+                    "Please fill all fields",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
-        RegistrationFormModel model = new RegistrationFormModel(
-                name,
-                email,
-                phone,
-                enrollment,
-                department,
-                sem,
-                System.currentTimeMillis()
-        );
+        if (currentUid == null || eventId == null) return;
+
+        // 🔥 Generate UNIQUE QR
+        String qrCode = eventId + "_" + currentUid + "_" + System.currentTimeMillis();
+
+        RegistrationFormModel model =
+                new RegistrationFormModel(
+                        name,
+                        email,
+                        phone,
+                        enrollment,
+                        department,
+                        sem,
+                        eventId,              // eventId
+                        currentUid,           // uid
+                        qrCode,               // qr
+                        false,                // verified default
+                        System.currentTimeMillis()
+                );
 
         FirebaseDatabase.getInstance(
                         "https://collexa-hub-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -111,23 +117,20 @@ public class EventRegistrationFragment extends Fragment {
                 .child(currentUid)
                 .setValue(model)
                 .addOnSuccessListener(a -> {
-                    Toast.makeText(
-                            getContext(),
-                            "Registration Successful",
-                            Toast.LENGTH_SHORT
-                    ).show();
 
-                    // Go back to previous fragment
+                    Toast.makeText(getContext(),
+                            "Registration Successful",
+                            Toast.LENGTH_SHORT).show();
+
                     requireActivity()
                             .getSupportFragmentManager()
                             .popBackStack();
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(
-                                getContext(),
-                                "Registration failed",
-                                Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(getContext(),
+                                "Registration Failed",
+                                Toast.LENGTH_SHORT).show()
                 );
     }
+
 }
