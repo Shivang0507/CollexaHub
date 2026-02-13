@@ -3,12 +3,11 @@ package com.example.collexahub;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,8 +23,10 @@ public class AddEventDialogFragment extends DialogFragment {
     private static final String ARG_ROLE = "user_role";
     private static final String ARG_EVENT = "event_data";
 
-    private EditText etTitle, etDesc, etDate, etTime, etVenue;
+    private EditText etTitle, etDesc, etDate, etTime, etVenue, etEntryFee;
     private Button btnPublish;
+    private RadioGroup radioGroupFee;
+    private RadioButton radioYes, radioNo;
 
     private String userRole;
     private EventModel event;
@@ -77,17 +78,43 @@ public class AddEventDialogFragment extends DialogFragment {
         etDate = view.findViewById(R.id.etDate);
         etTime = view.findViewById(R.id.etTime);
         etVenue = view.findViewById(R.id.etVenue);
+        etEntryFee = view.findViewById(R.id.etEntryFee);
+
+        radioGroupFee = view.findViewById(R.id.radioGroupFee);
+        radioYes = view.findViewById(R.id.radioYes);
+        radioNo = view.findViewById(R.id.radioNo);
+
         btnPublish = view.findViewById(R.id.btnPublish);
 
         etDate.setOnClickListener(v -> showDatePicker());
         etTime.setOnClickListener(v -> showTimePicker());
 
+        // Show/Hide Entry Fee field
+        radioGroupFee.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.radioYes) {
+                etEntryFee.setVisibility(View.VISIBLE);
+            } else {
+                etEntryFee.setVisibility(View.GONE);
+                etEntryFee.setText("");
+            }
+        });
+
+        // If Editing Event
         if (event != null) {
             etTitle.setText(event.title);
             etDesc.setText(event.description);
             etDate.setText(event.date);
             etTime.setText(event.time);
             etVenue.setText(event.venue);
+
+            if (event.paid) {
+                radioYes.setChecked(true);
+                etEntryFee.setVisibility(View.VISIBLE);
+                etEntryFee.setText(event.entryFee);
+            } else {
+                radioNo.setChecked(true);
+            }
+
             btnPublish.setText("Update Event");
         }
 
@@ -144,9 +171,20 @@ public class AddEventDialogFragment extends DialogFragment {
         String time = etTime.getText().toString().trim();
         String venue = etVenue.getText().toString().trim();
 
-        if (title.isEmpty() || date.isEmpty() || time.isEmpty()) {
+        boolean isPaid = radioYes.isChecked();
+        String entryFee = "0";
+
+        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(date) || TextUtils.isEmpty(time)) {
             Toast.makeText(getContext(), "Please fill all required fields", Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        if (isPaid) {
+            entryFee = etEntryFee.getText().toString().trim();
+            if (TextUtils.isEmpty(entryFee)) {
+                etEntryFee.setError("Enter fee amount");
+                return;
+            }
         }
 
         FirebaseDatabase db = FirebaseDatabase.getInstance(
@@ -166,7 +204,9 @@ public class AddEventDialogFragment extends DialogFragment {
                     venue,
                     FirebaseAuth.getInstance().getUid(),
                     userRole,
-                    System.currentTimeMillis()
+                    System.currentTimeMillis(),
+                    isPaid,
+                    entryFee
             );
 
             db.getReference("events").child(eventId).setValue(newEvent);
@@ -178,6 +218,8 @@ public class AddEventDialogFragment extends DialogFragment {
             db.getReference("events").child(event.eventId).child("date").setValue(date);
             db.getReference("events").child(event.eventId).child("time").setValue(time);
             db.getReference("events").child(event.eventId).child("venue").setValue(venue);
+            db.getReference("events").child(event.eventId).child("paid").setValue(isPaid);
+            db.getReference("events").child(event.eventId).child("entryFee").setValue(entryFee);
         }
 
         dismiss();

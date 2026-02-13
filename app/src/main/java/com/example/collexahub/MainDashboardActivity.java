@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -17,24 +18,35 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.razorpay.Checkout;
+import com.razorpay.PaymentResultListener;
 
 public class MainDashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        OnEventRegisterClickListener {
+        OnEventRegisterClickListener,
+        PaymentResultListener {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private MaterialToolbar toolbar;
 
+    private TextView headerName, headerEmail;
     private ImageView headerImage;
-    private TextView headerName, headerRole;
+
+    private EventRegistrationFragment currentRegistrationFragment;
+
+    private static final String DB_URL =
+            "https://collexa-hub-default-rtdb.asia-southeast1.firebasedatabase.app";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_dashboard);
 
-        // ---------------- SESSION CHECK ----------------
+        Checkout.preload(getApplicationContext());
+
         SessionManager sessionManager = new SessionManager(this);
         if (!sessionManager.isLoggedin()) {
             FirebaseAuth.getInstance().signOut();
@@ -43,7 +55,6 @@ public class MainDashboardActivity extends AppCompatActivity
             return;
         }
 
-        // ---------------- UI INIT ----------------
         toolbar = findViewById(R.id.toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
@@ -51,9 +62,7 @@ public class MainDashboardActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this,
-                drawerLayout,
-                toolbar,
+                this, drawerLayout, toolbar,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close
         );
@@ -62,33 +71,25 @@ public class MainDashboardActivity extends AppCompatActivity
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        // ---------------- NAV HEADER ----------------
+        // 🔥 LOAD NAV HEADER
         View headerView = navigationView.getHeaderView(0);
-        headerImage = headerView.findViewById(R.id.imageView);
         headerName = headerView.findViewById(R.id.textViewName);
-        headerRole = headerView.findViewById(R.id.textViewRole);
+        headerEmail = headerView.findViewById(R.id.textViewRole);
+        headerImage = headerView.findViewById(R.id.imageView);
 
-        headerName.setText(sessionManager.getName());
-        headerRole.setText(sessionManager.getRole().toUpperCase());
+        loadUserHeader();
 
-        headerImage.setImageResource(R.drawable.ic_admin);
-
-        // ---------------- LOAD HOME ----------------
         loadMenuAndHome();
 
-        // ---------------- BACK PRESS ----------------
         getOnBackPressedDispatcher().addCallback(this,
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-
                         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                             drawerLayout.closeDrawer(GravityCompat.START);
                             return;
                         }
-
-                        if (getSupportFragmentManager()
-                                .getBackStackEntryCount() > 0) {
+                        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
                             getSupportFragmentManager().popBackStack();
                         } else {
                             finish();
@@ -97,12 +98,35 @@ public class MainDashboardActivity extends AppCompatActivity
                 });
     }
 
-    // ---------------- LOAD HOME BASED ON ROLE ----------------
-    private void loadMenuAndHome() {
+    // =====================================================
+    // LOAD USER HEADER FROM FIREBASE
+    // =====================================================
+    private void loadUserHeader() {
 
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null) return;
+
+        DatabaseReference userRef = FirebaseDatabase.getInstance(DB_URL)
+                .getReference("users")
+                .child(uid);
+
+        userRef.get().addOnSuccessListener(snapshot -> {
+            if (snapshot.exists()) {
+
+                String name = snapshot.child("fullName").getValue(String.class);
+                String email = snapshot.child("email").getValue(String.class);
+
+                headerName.setText(name != null ? name : "");
+                headerEmail.setText(email != null ? email : "");
+
+                headerImage.setImageResource(R.drawable.ic_admin);
+            }
+        });
+    }
+
+    private void loadMenuAndHome() {
         SessionManager sessionManager = new SessionManager(this);
         String role = sessionManager.getRole();
-
         navigationView.getMenu().clear();
 
         switch (role) {
@@ -110,17 +134,14 @@ public class MainDashboardActivity extends AppCompatActivity
                 navigationView.inflateMenu(R.menu.menu_admin);
                 loadFragment(new AdminHomeFragment());
                 break;
-
             case "teacher":
                 navigationView.inflateMenu(R.menu.menu_teacher);
                 loadFragment(new TeacherHomeFragment());
                 break;
-
             case "volunteer":
                 navigationView.inflateMenu(R.menu.menu_volunteer);
                 loadFragment(new VolunteerHomeFragment());
                 break;
-
             default:
                 navigationView.inflateMenu(R.menu.menu_student);
                 loadFragment(new StudentHomeFragment());
@@ -128,7 +149,6 @@ public class MainDashboardActivity extends AppCompatActivity
         }
     }
 
-    // ---------------- FRAGMENT LOADER ----------------
     private void loadFragment(androidx.fragment.app.Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -136,93 +156,35 @@ public class MainDashboardActivity extends AppCompatActivity
                 .commit();
     }
 
-    // ---------------- NAVIGATION ----------------
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-        int id = item.getItemId();
-        SessionManager sessionManager = new SessionManager(this);
-        String role = sessionManager.getRole();
-
-        if (id == R.id.nav_home) {
-
-            switch (role) {
-                case "admin":
-                    loadFragment(new AdminHomeFragment());
-                    break;
-
-                case "teacher":
-                    loadFragment(new TeacherHomeFragment());
-                    break;
-
-                case "volunteer":
-                    loadFragment(new VolunteerHomeFragment());
-                    break;
-
-                default:
-                    loadFragment(new StudentHomeFragment());
-                    break;
-            }
-        }
-
-        else if (id == R.id.nav_profile) {
-
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, new ProfileFragment())
-                    .addToBackStack(null)
-                    .commit();
-        }
-
-        else if (id == R.id.nav_create_event) {
-
-            if ("admin".equalsIgnoreCase(role) ||
-                    "teacher".equalsIgnoreCase(role)) {
-
-                AddEventDialogFragment
-                        .newInstance(role)
-                        .show(getSupportFragmentManager(), "add_event");
-            }
-        }
-
-        else if (id == R.id.nav_logout) {
-
-            sessionManager.logout();
-            FirebaseAuth.getInstance().signOut();
-
-            Intent intent = new Intent(this, Login.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        }
-
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
     // =====================================================
-    // REGISTER BUTTON CLICK
+    // REGISTER CLICK
     // =====================================================
     @Override
-    public void onRegisterClick(String eventId) {
+    public void onRegisterClick(EventModel event) {
 
-        EventRegistrationFragment fragment =
-                EventRegistrationFragment.newInstance(eventId);
+        currentRegistrationFragment =
+                EventRegistrationFragment.newInstance(
+                        event.eventId,
+                        event.title,
+                        event.paid,
+                        event.entryFee
+                );
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, fragment)
+                .replace(R.id.fragment_container, currentRegistrationFragment)
                 .addToBackStack(null)
                 .commit();
     }
 
-    // =====================================================
-    // MY QR BUTTON CLICK
-    // =====================================================
     @Override
     public void onMyQRClick(String qrCode) {
-
         QRDisplayFragment fragment =
                 QRDisplayFragment.newInstance(qrCode);
 
@@ -231,5 +193,20 @@ public class MainDashboardActivity extends AppCompatActivity
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    // =====================================================
+    // RAZORPAY CALLBACKS
+    // =====================================================
+    @Override
+    public void onPaymentSuccess(String paymentId) {
+        if (currentRegistrationFragment != null) {
+            currentRegistrationFragment.handlePaymentSuccess(paymentId);
+        }
+    }
+
+    @Override
+    public void onPaymentError(int code, String response) {
+        Toast.makeText(this, "Payment Failed", Toast.LENGTH_SHORT).show();
     }
 }

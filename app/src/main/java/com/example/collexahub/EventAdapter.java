@@ -1,5 +1,6 @@
 package com.example.collexahub;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,16 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.tvDate.setText(event.date + " | " + event.time);
         holder.tvVenue.setText(event.venue);
 
+        // 🔥 Show Entry Fee
+        if (event.paid) {
+            holder.tvEntryFee.setText("Entry Fee: ₹" + event.entryFee);
+            holder.tvEntryFee.setTextColor(Color.RED);
+        } else {
+            holder.tvEntryFee.setText("Free Event");
+            holder.tvEntryFee.setTextColor(Color.parseColor("#2E7D32"));
+        }
+
+        // If NOT student → hide buttons
         if (!"student".equalsIgnoreCase(userRole)) {
             holder.btnRegister.setVisibility(View.GONE);
             holder.btnMyQR.setVisibility(View.GONE);
@@ -88,20 +99,22 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
                 } else {
 
-                    // Not registered yet
+                    // Not registered
                     holder.btnRegister.setVisibility(View.VISIBLE);
                     holder.btnMyQR.setVisibility(View.GONE);
 
                     holder.btnRegister.setOnClickListener(v -> {
                         if (listener != null) {
-                            listener.onRegisterClick(event.eventId);
+                            // ✅ PASS FULL EVENT MODEL
+                            listener.onRegisterClick(event);
                         }
                     });
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         });
     }
 
@@ -112,7 +125,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     static class EventViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvTitle, tvDate, tvVenue;
+        TextView tvTitle, tvDate, tvVenue, tvEntryFee;
         Button btnRegister, btnMyQR;
 
         EventViewHolder(@NonNull View itemView) {
@@ -121,6 +134,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             tvTitle = itemView.findViewById(R.id.tvEventTitle);
             tvDate = itemView.findViewById(R.id.tvEventDate);
             tvVenue = itemView.findViewById(R.id.tvEventVenue);
+            tvEntryFee = itemView.findViewById(R.id.tvEntryFee);
 
             btnRegister = itemView.findViewById(R.id.btnRegister);
             btnMyQR = itemView.findViewById(R.id.btnMyQR);

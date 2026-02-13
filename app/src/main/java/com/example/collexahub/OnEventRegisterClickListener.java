@@ -2,7 +2,7 @@ package com.example.collexahub;
 
 public interface OnEventRegisterClickListener {
 
-    void onRegisterClick(String eventId);
+    void onRegisterClick(EventModel event);
 
     void onMyQRClick(String qrCode);
 }

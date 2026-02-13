@@ -60,6 +60,48 @@
                     android:id="@+id/etVenue"
                     style="@style/PrimaryEditText"
                     android:hint="Venue / Location" />
+                <!-- Entry Fee Required -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Is Entry Fee Required?"
+                    android:textStyle="bold"
+                    android:layout_marginTop="12dp"/>
+
+                <RadioGroup
+                    style="@style/PrimaryEditText"
+                    android:id="@+id/radioGroupFee"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radioYes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_primary"
+                        android:text="Yes"/>
+
+                    <RadioButton
+                        android:id="@+id/radioNo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_primary"
+                        android:text="No"
+                        android:checked="true"/>
+                </RadioGroup>
+
+                <!-- Entry Fee Amount (Hidden by default) -->
+                <EditText
+                    style="@style/PrimaryEditText"
+                    android:id="@+id/etEntryFee"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Entry Fee Amount"
+                    android:inputType="number"
+                    android:visibility="gone"
+                    android:layout_marginTop="8dp"/>
+
 
                 <!-- Publish Button -->
                 <Button
