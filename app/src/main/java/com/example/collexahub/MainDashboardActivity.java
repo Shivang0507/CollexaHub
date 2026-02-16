@@ -182,6 +182,16 @@ public class MainDashboardActivity extends AppCompatActivity
         else if (id == R.id.nav_profile) {
             loadFragment(new ProfileFragment());
         }
+        else if (id == R.id.nav_create_event) {
+
+            if ("admin".equalsIgnoreCase(role) ||
+                    "teacher".equalsIgnoreCase(role)) {
+
+                AddEventDialogFragment
+                        .newInstance(role)
+                        .show(getSupportFragmentManager(), "add_event");
+            }
+        }
 
         else if (id == R.id.nav_logout) {
             sessionManager.logout();

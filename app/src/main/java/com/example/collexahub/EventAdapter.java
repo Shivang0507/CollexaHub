@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,10 +50,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         EventModel event = list.get(position);
 
+        // Basic Info
         holder.tvTitle.setText(event.title);
         holder.tvDate.setText(event.date + " | " + event.time);
         holder.tvVenue.setText(event.venue);
 
+        // Entry Fee
         if (event.paid) {
             holder.tvEntryFee.setText("Entry Fee: ₹" + event.entryFee);
             holder.tvEntryFee.setTextColor(Color.RED);
@@ -61,58 +64,66 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             holder.tvEntryFee.setTextColor(Color.parseColor("#2E7D32"));
         }
 
-        if (!"student".equalsIgnoreCase(userRole)) {
-            holder.btnRegister.setVisibility(View.GONE);
-            holder.btnMyQR.setVisibility(View.GONE);
-            return;
+        holder.btnRegister.setVisibility(View.GONE);
+        holder.btnMyQR.setVisibility(View.GONE);
+        holder.layoutAdminActions.setVisibility(View.GONE);
+
+        if ("admin".equalsIgnoreCase(userRole) ||
+                "teacher".equalsIgnoreCase(userRole)) {
+
+            holder.layoutAdminActions.setVisibility(View.VISIBLE);
+            return; // No register logic needed
         }
 
-        if (currentUid == null) return;
+        if ("student".equalsIgnoreCase(userRole)) {
 
-        DatabaseReference ref = FirebaseDatabase.getInstance(DB_URL)
-                .getReference("events")
-                .child(event.eventId)
-                .child("registrations")
-                .child(currentUid);
+            if (currentUid == null) return;
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            DatabaseReference ref = FirebaseDatabase.getInstance(DB_URL)
+                    .getReference("events")
+                    .child(event.eventId)
+                    .child("registrations")
+                    .child(currentUid);
 
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
 
-                if (snapshot.exists()) {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                    // Already registered
-                    holder.btnRegister.setVisibility(View.GONE);
-                    holder.btnMyQR.setVisibility(View.VISIBLE);
+                    if (snapshot.exists()) {
 
-                    String qrCode =
-                            snapshot.child("qrCode").getValue(String.class);
+                        // Already registered
+                        holder.btnMyQR.setVisibility(View.VISIBLE);
 
-                    holder.btnMyQR.setOnClickListener(v -> {
-                        if (listener != null && qrCode != null) {
-                            listener.onMyQRClick(qrCode);
-                        }
-                    });
+                        String qrCode =
+                                snapshot.child("qrCode").getValue(String.class);
 
-                } else {
+                        holder.btnMyQR.setOnClickListener(v -> {
+                            if (listener != null && qrCode != null) {
+                                listener.onMyQRClick(qrCode);
+                            }
+                        });
 
-                    // Not registered
-                    holder.btnRegister.setVisibility(View.VISIBLE);
-                    holder.btnMyQR.setVisibility(View.GONE);
+                    } else {
 
-                    holder.btnRegister.setOnClickListener(v -> {
-                        if (listener != null) {
-                            listener.onRegisterClick(event);
-                        }
-                    });
+                        // Not registered
+                        holder.btnRegister.setVisibility(View.VISIBLE);
+
+                        holder.btnRegister.setOnClickListener(v -> {
+                            if (listener != null) {
+                                listener.onRegisterClick(event);
+                            }
+                        });
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+        }
+
+
     }
 
     @Override
@@ -124,6 +135,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         TextView tvTitle, tvDate, tvVenue, tvEntryFee;
         Button btnRegister, btnMyQR;
+        LinearLayout layoutAdminActions;
 
         EventViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -135,6 +147,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
             btnRegister = itemView.findViewById(R.id.btnRegister);
             btnMyQR = itemView.findViewById(R.id.btnMyQR);
+            layoutAdminActions = itemView.findViewById(R.id.layoutAdminActions);
         }
     }
 }
