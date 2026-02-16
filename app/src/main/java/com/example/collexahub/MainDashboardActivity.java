@@ -3,7 +3,6 @@ package com.example.collexahub;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +17,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
@@ -34,8 +34,10 @@ public class MainDashboardActivity extends AppCompatActivity
     private TextView headerName, headerRole;
 
     private SessionManager sessionManager;
-
     private EventRegistrationFragment currentRegistrationFragment;
+
+    private static final String DB_URL =
+            "https://collexa-hub-default-rtdb.asia-southeast1.firebasedatabase.app";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +71,7 @@ public class MainDashboardActivity extends AppCompatActivity
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        View headerView = navigationView.getHeaderView(0);
+        var headerView = navigationView.getHeaderView(0);
         headerImage = headerView.findViewById(R.id.imageView);
         headerName = headerView.findViewById(R.id.textViewName);
         headerRole = headerView.findViewById(R.id.textViewRole);
@@ -93,7 +95,6 @@ public class MainDashboardActivity extends AppCompatActivity
                 });
     }
 
-
     private void setupHeader() {
 
         String fullName = sessionManager.getName();
@@ -102,22 +103,8 @@ public class MainDashboardActivity extends AppCompatActivity
         headerName.setText(fullName);
         headerRole.setText(role.toUpperCase());
 
-        switch (role) {
-            case "admin":
-                headerImage.setImageResource(R.drawable.ic_admin);
-                break;
-            case "teacher":
-                headerImage.setImageResource(R.drawable.ic_admin);
-                break;
-            case "volunteer":
-                headerImage.setImageResource(R.drawable.ic_admin);
-                break;
-            default:
-                headerImage.setImageResource(R.drawable.ic_admin);
-                break;
-        }
+        headerImage.setImageResource(R.drawable.ic_admin);
     }
-
 
     private void loadMenuAndHome() {
 
@@ -151,7 +138,6 @@ public class MainDashboardActivity extends AppCompatActivity
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
                 .commit();
     }
 
@@ -162,6 +148,9 @@ public class MainDashboardActivity extends AppCompatActivity
         String role = sessionManager.getRole();
 
         if (id == R.id.nav_home) {
+
+            getSupportFragmentManager().popBackStack(null,
+                    getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
 
             switch (role) {
                 case "admin":
@@ -182,6 +171,7 @@ public class MainDashboardActivity extends AppCompatActivity
         else if (id == R.id.nav_profile) {
             loadFragment(new ProfileFragment());
         }
+
         else if (id == R.id.nav_create_event) {
 
             if ("admin".equalsIgnoreCase(role) ||
@@ -207,6 +197,10 @@ public class MainDashboardActivity extends AppCompatActivity
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    // =========================
+    // STUDENT ACTIONS
+    // =========================
 
     @Override
     public void onRegisterClick(EventModel event) {
@@ -238,6 +232,33 @@ public class MainDashboardActivity extends AppCompatActivity
                 .addToBackStack(null)
                 .commit();
     }
+
+    // =========================
+    // ADMIN / TEACHER ACTIONS
+    // =========================
+
+    @Override
+    public void onEditClick(EventModel event) {
+
+        AddEventDialogFragment
+                .newInstance(sessionManager.getRole(), event)
+                .show(getSupportFragmentManager(), "edit_event");
+    }
+
+    @Override
+    public void onDeleteClick(EventModel event) {
+
+        FirebaseDatabase.getInstance(DB_URL)
+                .getReference("events")
+                .child(event.eventId)
+                .removeValue();
+
+        Toast.makeText(this, "Event Deleted", Toast.LENGTH_SHORT).show();
+    }
+
+    // =========================
+    // PAYMENT
+    // =========================
 
     @Override
     public void onPaymentSuccess(String paymentId) {

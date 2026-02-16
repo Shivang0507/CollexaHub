@@ -53,7 +53,7 @@ public class TeacherHomeFragment extends Fragment {
                 eventList,
                 "teacher",
                 currentUid,
-                null   // teachers don't register
+                (OnEventRegisterClickListener) requireActivity()
         );
 
         rvEvents.setAdapter(adapter);

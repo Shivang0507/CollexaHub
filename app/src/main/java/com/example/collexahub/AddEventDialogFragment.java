@@ -24,6 +24,10 @@ public class AddEventDialogFragment extends DialogFragment {
     private static final String ARG_EVENT = "event_data";
 
     private EditText etTitle, etDesc, etDate, etTime, etVenue, etEntryFee;
+
+    // ✅ ADDED
+    private EditText etEndDate, etEndTime;
+
     private Button btnPublish;
     private RadioGroup radioGroupFee;
     private RadioButton radioYes, radioNo;
@@ -49,14 +53,20 @@ public class AddEventDialogFragment extends DialogFragment {
         fragment.setArguments(args);
         return fragment;
     }
-
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onStart() {
+        super.onStart();
 
-        if (getArguments() != null) {
-            userRole = getArguments().getString(ARG_ROLE);
-            event = (EventModel) getArguments().getSerializable(ARG_EVENT);
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            getDialog().getWindow().setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+
+            // Keep transparent background so CardView handles shape
+            getDialog().getWindow().setBackgroundDrawableResource(
+                    android.R.color.transparent
+            );
         }
     }
 
@@ -80,6 +90,10 @@ public class AddEventDialogFragment extends DialogFragment {
         etVenue = view.findViewById(R.id.etVenue);
         etEntryFee = view.findViewById(R.id.etEntryFee);
 
+        // ✅ ADDED
+        etEndDate = view.findViewById(R.id.etEndDate);
+        etEndTime = view.findViewById(R.id.etEndTime);
+
         radioGroupFee = view.findViewById(R.id.radioGroupFee);
         radioYes = view.findViewById(R.id.radioYes);
         radioNo = view.findViewById(R.id.radioNo);
@@ -88,6 +102,10 @@ public class AddEventDialogFragment extends DialogFragment {
 
         etDate.setOnClickListener(v -> showDatePicker());
         etTime.setOnClickListener(v -> showTimePicker());
+
+        // ✅ ADDED
+        etEndDate.setOnClickListener(v -> showEndDatePicker());
+        etEndTime.setOnClickListener(v -> showEndTimePicker());
 
         radioGroupFee.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.radioYes) {
@@ -105,6 +123,10 @@ public class AddEventDialogFragment extends DialogFragment {
             etTime.setText(event.time);
             etVenue.setText(event.venue);
 
+            // ✅ ADDED (for update case)
+            etEndDate.setText(formatDateFromTimestamp(event.endTimestamp));
+            etEndTime.setText(formatTimeFromTimestamp(event.endTimestamp));
+
             if (event.paid) {
                 radioYes.setChecked(true);
                 etEntryFee.setVisibility(View.VISIBLE);
@@ -121,23 +143,8 @@ public class AddEventDialogFragment extends DialogFragment {
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (getDialog() != null && getDialog().getWindow() != null) {
-            getDialog().getWindow().setLayout(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            );
-            getDialog().getWindow().setBackgroundDrawableResource(
-                    android.R.color.transparent
-            );
-        }
-    }
-
     private void showDatePicker() {
         Calendar c = Calendar.getInstance();
-
         new DatePickerDialog(
                 requireContext(),
                 (view, year, month, dayOfMonth) ->
@@ -150,11 +157,36 @@ public class AddEventDialogFragment extends DialogFragment {
 
     private void showTimePicker() {
         Calendar c = Calendar.getInstance();
-
         new TimePickerDialog(
                 requireContext(),
                 (view, hour, minute) ->
                         etTime.setText(String.format("%02d:%02d", hour, minute)),
+                c.get(Calendar.HOUR_OF_DAY),
+                c.get(Calendar.MINUTE),
+                true
+        ).show();
+    }
+
+    // ✅ ADDED
+    private void showEndDatePicker() {
+        Calendar c = Calendar.getInstance();
+        new DatePickerDialog(
+                requireContext(),
+                (view, year, month, dayOfMonth) ->
+                        etEndDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year),
+                c.get(Calendar.YEAR),
+                c.get(Calendar.MONTH),
+                c.get(Calendar.DAY_OF_MONTH)
+        ).show();
+    }
+
+    // ✅ ADDED
+    private void showEndTimePicker() {
+        Calendar c = Calendar.getInstance();
+        new TimePickerDialog(
+                requireContext(),
+                (view, hour, minute) ->
+                        etEndTime.setText(String.format("%02d:%02d", hour, minute)),
                 c.get(Calendar.HOUR_OF_DAY),
                 c.get(Calendar.MINUTE),
                 true
@@ -169,11 +201,21 @@ public class AddEventDialogFragment extends DialogFragment {
         String time = etTime.getText().toString().trim();
         String venue = etVenue.getText().toString().trim();
 
+        // ✅ ADDED
+        String endDate = etEndDate.getText().toString().trim();
+        String endTime = etEndTime.getText().toString().trim();
+
         boolean isPaid = radioYes.isChecked();
         String entryFee = "0";
 
-        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(date) || TextUtils.isEmpty(time)) {
-            Toast.makeText(getContext(), "Please fill all required fields", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(date)
+                || TextUtils.isEmpty(time)
+                || TextUtils.isEmpty(endDate)
+                || TextUtils.isEmpty(endTime)) {
+
+            Toast.makeText(getContext(),
+                    "Please fill all required fields",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -183,6 +225,34 @@ public class AddEventDialogFragment extends DialogFragment {
                 etEntryFee.setError("Enter fee amount");
                 return;
             }
+        }
+
+        // ✅ Convert to timestamps
+        Calendar startCal = Calendar.getInstance();
+        String[] sd = date.split("/");
+        String[] st = time.split(":");
+        startCal.set(Integer.parseInt(sd[2]),
+                Integer.parseInt(sd[1]) - 1,
+                Integer.parseInt(sd[0]),
+                Integer.parseInt(st[0]),
+                Integer.parseInt(st[1]));
+        long startTimestamp = startCal.getTimeInMillis();
+
+        Calendar endCal = Calendar.getInstance();
+        String[] ed = endDate.split("/");
+        String[] et = endTime.split(":");
+        endCal.set(Integer.parseInt(ed[2]),
+                Integer.parseInt(ed[1]) - 1,
+                Integer.parseInt(ed[0]),
+                Integer.parseInt(et[0]),
+                Integer.parseInt(et[1]));
+        long endTimestamp = endCal.getTimeInMillis();
+
+        if (endTimestamp <= startTimestamp) {
+            Toast.makeText(getContext(),
+                    "End time must be after start time",
+                    Toast.LENGTH_SHORT).show();
+            return;
         }
 
         FirebaseDatabase db = FirebaseDatabase.getInstance(
@@ -204,7 +274,9 @@ public class AddEventDialogFragment extends DialogFragment {
                     userRole,
                     System.currentTimeMillis(),
                     isPaid,
-                    entryFee
+                    entryFee,
+                    startTimestamp,
+                    endTimestamp
             );
 
             db.getReference("events").child(eventId).setValue(newEvent);
@@ -218,8 +290,29 @@ public class AddEventDialogFragment extends DialogFragment {
             db.getReference("events").child(event.eventId).child("venue").setValue(venue);
             db.getReference("events").child(event.eventId).child("paid").setValue(isPaid);
             db.getReference("events").child(event.eventId).child("entryFee").setValue(entryFee);
+
+            // ✅ ADDED
+            db.getReference("events").child(event.eventId).child("startTimestamp").setValue(startTimestamp);
+            db.getReference("events").child(event.eventId).child("endTimestamp").setValue(endTimestamp);
         }
 
         dismiss();
+    }
+
+    // ✅ Helper methods
+    private String formatDateFromTimestamp(long timestamp) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(timestamp);
+        return c.get(Calendar.DAY_OF_MONTH) + "/" +
+                (c.get(Calendar.MONTH) + 1) + "/" +
+                c.get(Calendar.YEAR);
+    }
+
+    private String formatTimeFromTimestamp(long timestamp) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(timestamp);
+        return String.format("%02d:%02d",
+                c.get(Calendar.HOUR_OF_DAY),
+                c.get(Calendar.MINUTE));
     }
 }

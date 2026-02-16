@@ -14,11 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,12 +81,45 @@ public class EventManagementFragment extends Fragment {
 
         eventList = new ArrayList<>();
 
+        // ✅ FIXED: Listener handled inside fragment
         adapter = new EventAdapter(
                 eventList,
                 userRole,
                 currentUid,
-                null   // no register action for admin/teacher
+                new OnEventRegisterClickListener() {
+
+                    @Override
+                    public void onRegisterClick(EventModel event) {
+                        // Not needed here
+                    }
+
+                    @Override
+                    public void onMyQRClick(String qrCode) {
+                        // Not needed here
+                    }
+
+                    @Override
+                    public void onEditClick(EventModel event) {
+
+                        AddEventDialogFragment
+                                .newInstance(userRole, event)
+                                .show(getChildFragmentManager(), "edit_event");
+                    }
+
+                    @Override
+                    public void onDeleteClick(EventModel event) {
+
+                        eventRef.child(event.eventId).removeValue();
+
+                        Toast.makeText(
+                                getContext(),
+                                "Event Deleted",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                }
         );
+
         recyclerView.setAdapter(adapter);
 
         if ("admin".equalsIgnoreCase(userRole)
@@ -121,7 +150,15 @@ public class EventManagementFragment extends Fragment {
                         for (DataSnapshot ds : snapshot.getChildren()) {
                             EventModel event = ds.getValue(EventModel.class);
                             if (event != null) {
-                                eventList.add(event);
+
+                                // ✅ Auto delete expired event
+                                if (event.endTimestamp > 0 &&
+                                        System.currentTimeMillis() > event.endTimestamp) {
+
+                                    eventRef.child(event.eventId).removeValue();
+                                } else {
+                                    eventList.add(event);
+                                }
                             }
                         }
 

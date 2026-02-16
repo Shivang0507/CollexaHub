@@ -10,6 +10,10 @@
             style="@style/CollexaCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
 
             <LinearLayout
                 style="@style/SecondaryLinear">
@@ -48,6 +52,17 @@
                     android:hint="Event Time (HH:MM)"
                     android:focusable="false"
                     android:clickable="true"/>
+                <EditText
+                    android:id="@+id/etEndDate"
+                    style="@style/PrimaryEditText"
+                    android:hint="End Date"
+                    android:focusable="false"/>
+
+                <EditText
+                    android:id="@+id/etEndTime"
+                    style="@style/PrimaryEditText"
+                    android:hint="End Time"
+                    android:focusable="false"/>
 
                 <EditText
                     android:id="@+id/etVenue"
@@ -100,7 +115,9 @@
                     android:layout_marginTop="@dimen/_8sdp"
                     android:text="Publish Event" />
 
+
             </LinearLayout>
+            </ScrollView>
 
         </androidx.cardview.widget.CardView>
 

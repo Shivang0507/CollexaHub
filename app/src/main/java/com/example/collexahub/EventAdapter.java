@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.LinearLayout;
+import android.widget.ImageButton; // ✅ ADDED
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -68,14 +69,36 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.btnMyQR.setVisibility(View.GONE);
         holder.layoutAdminActions.setVisibility(View.GONE);
 
+        // ✅ UPDATED ADMIN / TEACHER BLOCK (ONLY ADDED CLICK LOGIC)
         if ("admin".equalsIgnoreCase(userRole) ||
                 "teacher".equalsIgnoreCase(userRole)) {
 
             holder.layoutAdminActions.setVisibility(View.VISIBLE);
-            return; // No register logic needed
+
+            holder.btnEdit.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onEditClick(event);
+                }
+            });
+
+            holder.btnDelete.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onDeleteClick(event);
+                }
+            });
+
+            return;
         }
 
         if ("student".equalsIgnoreCase(userRole)) {
+
+            // ✅ Stop registration after event start time
+            if (event.startTimestamp > 0 &&
+                    System.currentTimeMillis() >= event.startTimestamp) {
+
+                holder.btnRegister.setVisibility(View.GONE);
+                return;
+            }
 
             if (currentUid == null) return;
 
@@ -92,7 +115,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
                     if (snapshot.exists()) {
 
-                        // Already registered
                         holder.btnMyQR.setVisibility(View.VISIBLE);
 
                         String qrCode =
@@ -106,7 +128,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
                     } else {
 
-                        // Not registered
                         holder.btnRegister.setVisibility(View.VISIBLE);
 
                         holder.btnRegister.setOnClickListener(v -> {
@@ -122,8 +143,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 }
             });
         }
-
-
     }
 
     @Override
@@ -137,6 +156,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         Button btnRegister, btnMyQR;
         LinearLayout layoutAdminActions;
 
+        // ✅ ADDED
+        ImageButton btnEdit, btnDelete;
+
         EventViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -148,6 +170,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             btnRegister = itemView.findViewById(R.id.btnRegister);
             btnMyQR = itemView.findViewById(R.id.btnMyQR);
             layoutAdminActions = itemView.findViewById(R.id.layoutAdminActions);
+
+            // ✅ ADDED
+            btnEdit = itemView.findViewById(R.id.btnEdit);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
         }
     }
 }
