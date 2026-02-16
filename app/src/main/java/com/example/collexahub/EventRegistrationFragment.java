@@ -119,7 +119,6 @@ public class EventRegistrationFragment extends Fragment {
         }
     }
 
-    // Called from Activity
     public void handlePaymentSuccess(String paymentId) {
         Toast.makeText(getContext(),
                 "Payment Successful",
@@ -160,7 +159,6 @@ public class EventRegistrationFragment extends Fragment {
                             "Registration Successful",
                             Toast.LENGTH_SHORT).show();
 
-                    // 🔥 Go back to StudentHomeFragment
                     requireActivity()
                             .getSupportFragmentManager()
                             .popBackStack(null,

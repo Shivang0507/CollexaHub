@@ -89,7 +89,6 @@ public class AddEventDialogFragment extends DialogFragment {
         etDate.setOnClickListener(v -> showDatePicker());
         etTime.setOnClickListener(v -> showTimePicker());
 
-        // Show/Hide Entry Fee field
         radioGroupFee.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.radioYes) {
                 etEntryFee.setVisibility(View.VISIBLE);
@@ -99,7 +98,6 @@ public class AddEventDialogFragment extends DialogFragment {
             }
         });
 
-        // If Editing Event
         if (event != null) {
             etTitle.setText(event.title);
             etDesc.setText(event.description);

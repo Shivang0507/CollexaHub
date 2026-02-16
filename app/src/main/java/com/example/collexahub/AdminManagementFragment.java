@@ -53,7 +53,7 @@ public class AdminManagementFragment extends Fragment {
         rvAdmins = view.findViewById(R.id.rvAdmins);
         rvAdmins.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        btnAddAdmin = view.findViewById(R.id.btnAddAdmin); // ✅ added
+        btnAddAdmin = view.findViewById(R.id.btnAddAdmin);
 
         adminList = new ArrayList<>();
         adapter = new AdminAdapter(adminList);

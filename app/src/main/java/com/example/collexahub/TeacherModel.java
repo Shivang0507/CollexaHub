@@ -9,7 +9,6 @@ public class TeacherModel {
     private String role;
 
     public TeacherModel() {
-        // required for Firebase
     }
 
     public String getUid() {

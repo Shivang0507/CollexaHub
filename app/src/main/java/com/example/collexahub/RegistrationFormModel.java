@@ -17,7 +17,6 @@ public class RegistrationFormModel {
     public long timestamp;
 
     public RegistrationFormModel() {
-        // Required empty constructor for Firebase
     }
 
     public RegistrationFormModel(

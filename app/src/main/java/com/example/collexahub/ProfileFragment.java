@@ -87,14 +87,10 @@ public class ProfileFragment extends Fragment {
 
     private void applyRoleRules(String role) {
 
-        // Example: if later you want restrictions
         if ("admin".equals(role)) {
-            // Admin allowed everything (default)
         }
 
         if ("volunteer".equals(role)) {
-            // Example restriction (optional)
-            // etEmail.setEnabled(false);
         }
     }
 

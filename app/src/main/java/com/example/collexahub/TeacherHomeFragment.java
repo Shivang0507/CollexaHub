@@ -26,7 +26,7 @@ public class TeacherHomeFragment extends Fragment {
     private EventAdapter adapter;
     private List<EventModel> eventList;
 
-    private String currentUid; // ✅ ADD THIS
+    private String currentUid;
 
     @Nullable
     @Override
@@ -47,10 +47,8 @@ public class TeacherHomeFragment extends Fragment {
 
         eventList = new ArrayList<>();
 
-        // ✅ Initialize UID
         currentUid = FirebaseAuth.getInstance().getUid();
 
-        // ✅ Correct 4-parameter constructor
         adapter = new EventAdapter(
                 eventList,
                 "teacher",

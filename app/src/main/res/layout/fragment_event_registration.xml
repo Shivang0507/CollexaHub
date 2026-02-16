@@ -7,7 +7,6 @@
     <LinearLayout
         style="@style/LinerLayout">
 
-        <!-- Card View -->
         <androidx.cardview.widget.CardView
             style="@style/CollexaCardView"
             android:layout_width="match_parent"
@@ -16,50 +15,42 @@
             <LinearLayout
                 style="@style/SecondaryLinear">
 
-                <!-- Title -->
                 <TextView
                     style="@style/LightTextViwe"
                     android:text="Event Registration" />
 
-                <!-- App Logo -->
                 <ImageView
                     android:id="@+id/imgLogo"
                     style="@style/MainImageView"/>
 
-                <!-- Name -->
                 <EditText
                     android:id="@+id/etName"
                     style="@style/PrimaryEditText"
                     android:hint="Full Name *"
                     android:inputType="textPersonName" />
 
-                <!-- Email -->
                 <EditText
                     android:id="@+id/etEmail"
                     style="@style/PrimaryEditText"
                     android:hint="Email Address *"
                     android:inputType="textEmailAddress" />
 
-                <!-- Phone -->
                 <EditText
                     android:id="@+id/etPhone"
                     style="@style/PrimaryEditText"
                     android:hint="Phone Number *"
                     android:inputType="phone" />
 
-                <!-- Enrollment -->
                 <EditText
                     android:id="@+id/etEnrollment"
                     style="@style/PrimaryEditText"
                     android:hint="Enrollment Number *" />
 
-                <!-- Department -->
                 <EditText
                     android:id="@+id/etDepartment"
                     style="@style/PrimaryEditText"
                     android:hint="Department" />
 
-                <!-- Semester -->
                 <EditText
                     android:id="@+id/etSem"
                     style="@style/PrimaryEditText"

@@ -53,7 +53,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.tvDate.setText(event.date + " | " + event.time);
         holder.tvVenue.setText(event.venue);
 
-        // 🔥 Show Entry Fee
         if (event.paid) {
             holder.tvEntryFee.setText("Entry Fee: ₹" + event.entryFee);
             holder.tvEntryFee.setTextColor(Color.RED);
@@ -62,7 +61,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             holder.tvEntryFee.setTextColor(Color.parseColor("#2E7D32"));
         }
 
-        // If NOT student → hide buttons
         if (!"student".equalsIgnoreCase(userRole)) {
             holder.btnRegister.setVisibility(View.GONE);
             holder.btnMyQR.setVisibility(View.GONE);
@@ -105,7 +103,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
                     holder.btnRegister.setOnClickListener(v -> {
                         if (listener != null) {
-                            // ✅ PASS FULL EVENT MODEL
                             listener.onRegisterClick(event);
                         }
                     });

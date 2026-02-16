@@ -85,7 +85,6 @@ public class EventManagementFragment extends Fragment {
 
         eventList = new ArrayList<>();
 
-        // ✅ UPDATED ADAPTER (4th arg = null)
         adapter = new EventAdapter(
                 eventList,
                 userRole,
@@ -94,7 +93,6 @@ public class EventManagementFragment extends Fragment {
         );
         recyclerView.setAdapter(adapter);
 
-        // FAB visibility
         if ("admin".equalsIgnoreCase(userRole)
                 || "teacher".equalsIgnoreCase(userRole)) {
             fabAddEvent.setVisibility(View.VISIBLE);

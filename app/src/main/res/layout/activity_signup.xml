@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/tools"
     style="@style/MainScrollView"
     android:id="@+id/main">
 
     <LinearLayout
         style="@style/LinerLayout">
 
-        <!-- Card View -->
         <androidx.cardview.widget.CardView
             style="@style/CollexaCardView"
             android:layout_width="match_parent"
@@ -18,7 +16,6 @@
             <LinearLayout
                 style="@style/SecondaryLinear">
 
-                <!-- App Title -->
                 <TextView
                     style="@style/LightTextViwe"
                     android:text="Collexa Hub"
@@ -29,12 +26,10 @@
                     android:text="Create your account"
                     />
 
-                <!-- App Logo -->
                 <ImageView
                     android:id="@+id/imgLogo"
                     style="@style/MainImageView"/>
 
-                <!-- Full Name -->
                 <EditText
                     android:id="@+id/etFullName"
                     style="@style/PrimaryEditText"
@@ -42,7 +37,6 @@
                     android:inputType="textPersonName"
                     />
 
-                <!-- Email -->
                 <EditText
                     android:id="@+id/etEmail"
                     style="@style/PrimaryEditText"
@@ -50,7 +44,6 @@
                     android:inputType="textEmailAddress"
                     />
 
-                <!-- Mobile -->
                 <EditText
                     android:id="@+id/etMobile"
                     style="@style/PrimaryEditText"
@@ -59,7 +52,6 @@
                     android:inputType="phone"
                     />
 
-                <!-- Gender -->
                 <RadioGroup
                     android:layout_gravity="center"
                     android:id="@+id/rgGender"
@@ -91,7 +83,6 @@
                 </RadioGroup>
 
 
-                <!-- Password -->
                 <EditText
                     android:layout_marginTop="@dimen/_12sdp"
                     android:id="@+id/etPassword"
@@ -100,7 +91,6 @@
                     android:inputType="textPassword"
                     />
 
-                <!-- Signup Button -->
                 <Button
                     android:layout_marginVertical="@dimen/_4sdp"
                     android:id="@+id/btnSignup"

@@ -7,7 +7,6 @@
     <LinearLayout
         style="@style/LinerLayout">
 
-        <!-- Card View -->
         <androidx.cardview.widget.CardView
             style="@style/CollexaCardView"
             android:layout_width="match_parent"
@@ -17,7 +16,6 @@
             <LinearLayout
                 style="@style/SecondaryLinear">
 
-                <!-- App Title -->
                 <TextView
                     style="@style/LightTextViwe"
                     android:text="Collexa Hub"
@@ -25,12 +23,10 @@
 
 
 
-                <!-- App Logo -->
                 <ImageView
                     android:id="@+id/imgLogo"
                     style="@style/MainImageView"/>
 
-                <!-- Email -->
                 <EditText
                     android:id="@+id/etEmail"
                     style="@style/PrimaryEditText"
@@ -38,7 +34,6 @@
                     android:inputType="textEmailAddress"
                     />
 
-                <!-- Password -->
                 <EditText
                     android:id="@+id/etPassword"
                     style="@style/PrimaryEditText"
@@ -46,7 +41,6 @@
                     android:inputType="textPassword"
                     />
 
-                <!-- Login Button -->
                 <Button
                     android:layout_marginVertical="@dimen/_4sdp"
                     android:id="@+id/btnLogin"

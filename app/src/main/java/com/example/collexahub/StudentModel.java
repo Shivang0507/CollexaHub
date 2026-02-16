@@ -9,7 +9,6 @@ public class StudentModel {
     private String role;
 
     public StudentModel() {
-        // required for Firebase
     }
 
     public String getUid() {

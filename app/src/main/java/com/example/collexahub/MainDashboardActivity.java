@@ -71,7 +71,6 @@ public class MainDashboardActivity extends AppCompatActivity
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        // 🔥 LOAD NAV HEADER
         View headerView = navigationView.getHeaderView(0);
         headerName = headerView.findViewById(R.id.textViewName);
         headerEmail = headerView.findViewById(R.id.textViewRole);
@@ -98,9 +97,7 @@ public class MainDashboardActivity extends AppCompatActivity
                 });
     }
 
-    // =====================================================
-    // LOAD USER HEADER FROM FIREBASE
-    // =====================================================
+
     private void loadUserHeader() {
 
         String uid = FirebaseAuth.getInstance().getUid();
@@ -162,9 +159,7 @@ public class MainDashboardActivity extends AppCompatActivity
         return true;
     }
 
-    // =====================================================
-    // REGISTER CLICK
-    // =====================================================
+
     @Override
     public void onRegisterClick(EventModel event) {
 
@@ -195,9 +190,7 @@ public class MainDashboardActivity extends AppCompatActivity
                 .commit();
     }
 
-    // =====================================================
-    // RAZORPAY CALLBACKS
-    // =====================================================
+
     @Override
     public void onPaymentSuccess(String paymentId) {
         if (currentRegistrationFragment != null) {

@@ -49,7 +49,6 @@ public class StudentHomeFragment extends Fragment {
         eventList = new ArrayList<>();
         currentUid = FirebaseAuth.getInstance().getUid();
 
-        // 🔥 IMPORTANT — Activity handles click
         adapter = new EventAdapter(
                 eventList,
                 "student",

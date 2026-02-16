@@ -9,7 +9,6 @@ public class UserModel {
     public String role;
 
     public UserModel() {
-        // Required for Firebase
     }
 
     public UserModel(String fullName, String email, String mobile, String gender ,String role) {

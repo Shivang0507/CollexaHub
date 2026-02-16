@@ -51,7 +51,6 @@ public class VolunteerHomeFragment extends Fragment {
         eventList = new ArrayList<>();
         currentUid = FirebaseAuth.getInstance().getUid();
 
-        // ✅ UPDATED ADAPTER (4 arguments)
         adapter = new EventAdapter(
                 eventList,
                 "volunteer",
@@ -84,7 +83,6 @@ public class VolunteerHomeFragment extends Fragment {
                             }
                         }
 
-                        // Latest first
                         Collections.reverse(eventList);
                         adapter.notifyDataSetChanged();
                     }

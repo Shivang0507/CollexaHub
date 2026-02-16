@@ -6,7 +6,6 @@
     <LinearLayout
         style="@style/LinerLayout">
 
-        <!-- Card View -->
         <androidx.cardview.widget.CardView
             style="@style/CollexaCardView"
             android:layout_width="match_parent"
@@ -15,7 +14,6 @@
             <LinearLayout
                 style="@style/SecondaryLinear">
 
-                <!-- Title -->
                 <TextView
                     style="@style/LightTextViwe"
                     android:text="Create New Event" />
@@ -24,13 +22,11 @@
                     android:id="@+id/imgLogo"
                     style="@style/MainImageView"/>
 
-                <!-- Event Title -->
                 <EditText
                     android:id="@+id/etTitle"
                     style="@style/PrimaryEditText"
                     android:hint="Event Title" />
 
-                <!-- Description -->
                 <EditText
                     android:id="@+id/etDescription"
                     style="@style/PrimaryEditText"
@@ -39,7 +35,6 @@
                     android:gravity="top"
                     android:inputType="textMultiLine" />
 
-                <!-- Date -->
                 <EditText
                     android:id="@+id/etDate"
                     style="@style/PrimaryEditText"
@@ -47,7 +42,6 @@
                     android:focusable="false"
                     android:clickable="true"/>
 
-                <!-- Time -->
                 <EditText
                     android:id="@+id/etTime"
                     style="@style/PrimaryEditText"
@@ -55,12 +49,10 @@
                     android:focusable="false"
                     android:clickable="true"/>
 
-                <!-- Venue -->
                 <EditText
                     android:id="@+id/etVenue"
                     style="@style/PrimaryEditText"
                     android:hint="Venue / Location" />
-                <!-- Entry Fee Required -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -91,7 +83,6 @@
                         android:checked="true"/>
                 </RadioGroup>
 
-                <!-- Entry Fee Amount (Hidden by default) -->
                 <EditText
                     style="@style/PrimaryEditText"
                     android:id="@+id/etEntryFee"
@@ -103,7 +94,6 @@
                     android:layout_marginTop="8dp"/>
 
 
-                <!-- Publish Button -->
                 <Button
                     android:id="@+id/btnPublish"
                     style="@style/SecondButton"

@@ -43,7 +43,6 @@ public class AdminAdapter extends RecyclerView.Adapter<AdminAdapter.AdminViewHol
         holder.tvEmail.setText(admin.getEmail());
         holder.tvMobile.setText(admin.getMobile());
 
-        // 🚫 Protect default admin
         if (DEFAULT_ADMIN_UID.equals(admin.getUid())) {
             holder.btnDeleteAdmin.setVisibility(View.INVISIBLE);
             return;
