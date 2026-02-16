@@ -8,9 +8,6 @@
         android:id="@+id/nav_profile"
         android:title="Profile"/>
 
-    <item
-        android:id="@+id/nav_qr"
-        android:title="My QR"/>
 
     <item
         android:id="@+id/nav_logout"
