@@ -82,6 +82,13 @@ public class AddEventDialogFragment extends DialogFragment {
                 container,
                 false
         );
+        if (getArguments() != null) {
+            userRole = getArguments().getString(ARG_ROLE);
+
+            if (getArguments().containsKey(ARG_EVENT)) {
+                event = (EventModel) getArguments().getSerializable(ARG_EVENT);
+            }
+        }
 
         etTitle = view.findViewById(R.id.etTitle);
         etDesc = view.findViewById(R.id.etDescription);
@@ -292,17 +299,26 @@ public class AddEventDialogFragment extends DialogFragment {
 
         } else {
 
-            db.getReference("events").child(event.eventId).child("title").setValue(title);
-            db.getReference("events").child(event.eventId).child("description").setValue(desc);
-            db.getReference("events").child(event.eventId).child("date").setValue(date);
-            db.getReference("events").child(event.eventId).child("time").setValue(time);
-            db.getReference("events").child(event.eventId).child("venue").setValue(venue);
-            db.getReference("events").child(event.eventId).child("paid").setValue(isPaid);
-            db.getReference("events").child(event.eventId).child("entryFee").setValue(entryFee);
+            EventModel updatedEvent = new EventModel(
+                    event.eventId,
+                    title,
+                    desc,
+                    date,
+                    time,
+                    venue,
+                    event.createdByUid,
+                    event.createdByRole,
+                    event.timestamp,
+                    isPaid,
+                    entryFee,
+                    startTimestamp,
+                    endTimestamp
+            );
 
-            // ✅ ADDED
-            db.getReference("events").child(event.eventId).child("startTimestamp").setValue(startTimestamp);
-            db.getReference("events").child(event.eventId).child("endTimestamp").setValue(endTimestamp);
+            db.getReference("events")
+                    .child(event.eventId)
+                    .setValue(updatedEvent);
+
         }
 
         dismiss();
