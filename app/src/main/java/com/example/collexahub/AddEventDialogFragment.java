@@ -236,6 +236,10 @@ public class AddEventDialogFragment extends DialogFragment {
                 Integer.parseInt(sd[0]),
                 Integer.parseInt(st[0]),
                 Integer.parseInt(st[1]));
+
+        startCal.set(Calendar.SECOND, 0);
+        startCal.set(Calendar.MILLISECOND, 0);
+
         long startTimestamp = startCal.getTimeInMillis();
 
         Calendar endCal = Calendar.getInstance();
@@ -246,7 +250,12 @@ public class AddEventDialogFragment extends DialogFragment {
                 Integer.parseInt(ed[0]),
                 Integer.parseInt(et[0]),
                 Integer.parseInt(et[1]));
+
+        endCal.set(Calendar.SECOND, 0);
+        endCal.set(Calendar.MILLISECOND, 0);
+
         long endTimestamp = endCal.getTimeInMillis();
+
 
         if (endTimestamp <= startTimestamp) {
             Toast.makeText(getContext(),

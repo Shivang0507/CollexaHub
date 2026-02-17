@@ -17,7 +17,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.*;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
@@ -55,6 +55,9 @@ public class MainDashboardActivity extends AppCompatActivity
             return;
         }
 
+        // ✅ ADDED: Delete expired events whenever dashboard opens
+        deleteExpiredEvents();
+
         toolbar = findViewById(R.id.toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
@@ -91,6 +94,37 @@ public class MainDashboardActivity extends AppCompatActivity
                         } else {
                             finish();
                         }
+                    }
+                });
+    }
+
+    // ✅ ADDED METHOD (Nothing else changed)
+    private void deleteExpiredEvents() {
+
+        FirebaseDatabase.getInstance(DB_URL)
+                .getReference("events")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        long currentTime = System.currentTimeMillis();
+
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+
+                            EventModel event = ds.getValue(EventModel.class);
+
+                            if (event != null &&
+                                    event.endTimestamp > 0 &&
+                                    currentTime >= event.endTimestamp) {
+
+                                ds.getRef().removeValue();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
                     }
                 });
     }
@@ -198,10 +232,6 @@ public class MainDashboardActivity extends AppCompatActivity
         return true;
     }
 
-    // =========================
-    // STUDENT ACTIONS
-    // =========================
-
     @Override
     public void onRegisterClick(EventModel event) {
 
@@ -233,10 +263,6 @@ public class MainDashboardActivity extends AppCompatActivity
                 .commit();
     }
 
-    // =========================
-    // ADMIN / TEACHER ACTIONS
-    // =========================
-
     @Override
     public void onEditClick(EventModel event) {
 
@@ -255,10 +281,6 @@ public class MainDashboardActivity extends AppCompatActivity
 
         Toast.makeText(this, "Event Deleted", Toast.LENGTH_SHORT).show();
     }
-
-    // =========================
-    // PAYMENT
-    // =========================
 
     @Override
     public void onPaymentSuccess(String paymentId) {

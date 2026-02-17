@@ -60,6 +60,14 @@ public class EventManagementFragment extends Fragment {
         eventRef = database.getReference("events");
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // ✅ ADDED: Check expired events whenever fragment resumes
+        checkExpiredEvents();
+    }
+
     @Nullable
     @Override
     public View onCreateView(
@@ -81,7 +89,6 @@ public class EventManagementFragment extends Fragment {
 
         eventList = new ArrayList<>();
 
-        // ✅ FIXED: Listener handled inside fragment
         adapter = new EventAdapter(
                 eventList,
                 userRole,
@@ -145,18 +152,24 @@ public class EventManagementFragment extends Fragment {
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                         eventList.clear();
+                        long currentTime = System.currentTimeMillis();
 
                         for (DataSnapshot ds : snapshot.getChildren()) {
+
                             EventModel event = ds.getValue(EventModel.class);
+
                             if (event != null) {
 
-                                // ✅ Auto delete expired event
                                 if (event.endTimestamp > 0 &&
-                                        System.currentTimeMillis() > event.endTimestamp) {
+                                        currentTime >= event.endTimestamp) {
 
+                                    // 🔥 DELETE EXPIRED EVENT
                                     eventRef.child(event.eventId).removeValue();
+
                                 } else {
+
                                     eventList.add(event);
                                 }
                             }
@@ -175,5 +188,35 @@ public class EventManagementFragment extends Fragment {
                         ).show();
                     }
                 });
+    }
+
+
+    // ✅ ADDED METHOD (ONLY THIS PART NEW)
+    private void checkExpiredEvents() {
+
+        eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                long currentTime = System.currentTimeMillis();
+
+                for (DataSnapshot ds : snapshot.getChildren()) {
+
+                    EventModel event = ds.getValue(EventModel.class);
+
+                    if (event != null &&
+                            event.endTimestamp > 0 &&
+                            currentTime >= event.endTimestamp) {
+
+                        eventRef.child(event.eventId).removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 }
