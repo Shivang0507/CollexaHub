@@ -25,7 +25,6 @@ public class AddEventDialogFragment extends DialogFragment {
 
     private EditText etTitle, etDesc, etDate, etTime, etVenue, etEntryFee;
 
-    // ✅ ADDED
     private EditText etEndDate, etEndTime;
 
     private Button btnPublish;
@@ -97,7 +96,6 @@ public class AddEventDialogFragment extends DialogFragment {
         etVenue = view.findViewById(R.id.etVenue);
         etEntryFee = view.findViewById(R.id.etEntryFee);
 
-        // ✅ ADDED
         etEndDate = view.findViewById(R.id.etEndDate);
         etEndTime = view.findViewById(R.id.etEndTime);
 
@@ -110,7 +108,6 @@ public class AddEventDialogFragment extends DialogFragment {
         etDate.setOnClickListener(v -> showDatePicker());
         etTime.setOnClickListener(v -> showTimePicker());
 
-        // ✅ ADDED
         etEndDate.setOnClickListener(v -> showEndDatePicker());
         etEndTime.setOnClickListener(v -> showEndTimePicker());
 
@@ -130,7 +127,6 @@ public class AddEventDialogFragment extends DialogFragment {
             etTime.setText(event.time);
             etVenue.setText(event.venue);
 
-            // ✅ ADDED (for update case)
             etEndDate.setText(formatDateFromTimestamp(event.endTimestamp));
             etEndTime.setText(formatTimeFromTimestamp(event.endTimestamp));
 
@@ -174,7 +170,6 @@ public class AddEventDialogFragment extends DialogFragment {
         ).show();
     }
 
-    // ✅ ADDED
     private void showEndDatePicker() {
         Calendar c = Calendar.getInstance();
         new DatePickerDialog(
@@ -187,7 +182,6 @@ public class AddEventDialogFragment extends DialogFragment {
         ).show();
     }
 
-    // ✅ ADDED
     private void showEndTimePicker() {
         Calendar c = Calendar.getInstance();
         new TimePickerDialog(
@@ -208,7 +202,6 @@ public class AddEventDialogFragment extends DialogFragment {
         String time = etTime.getText().toString().trim();
         String venue = etVenue.getText().toString().trim();
 
-        // ✅ ADDED
         String endDate = etEndDate.getText().toString().trim();
         String endTime = etEndTime.getText().toString().trim();
 
@@ -234,7 +227,6 @@ public class AddEventDialogFragment extends DialogFragment {
             }
         }
 
-        // ✅ Convert to timestamps
         Calendar startCal = Calendar.getInstance();
         String[] sd = date.split("/");
         String[] st = time.split(":");
@@ -324,7 +316,6 @@ public class AddEventDialogFragment extends DialogFragment {
         dismiss();
     }
 
-    // ✅ Helper methods
     private String formatDateFromTimestamp(long timestamp) {
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(timestamp);
