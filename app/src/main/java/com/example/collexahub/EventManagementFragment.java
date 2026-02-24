@@ -63,8 +63,6 @@ public class EventManagementFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        // ✅ ADDED: Check expired events whenever fragment resumes
         checkExpiredEvents();
     }
 
@@ -124,8 +122,22 @@ public class EventManagementFragment extends Fragment {
                                 Toast.LENGTH_SHORT
                         ).show();
                     }
+
+                    @Override
+                    public void onViewRegistrationsClick(EventModel event) {
+
+                        RegisteredStudentsFragment fragment =
+                                RegisteredStudentsFragment.newInstance(event.eventId);
+
+                        requireActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment_container, fragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
                 }
         );
+
 
         recyclerView.setAdapter(adapter);
 
@@ -165,7 +177,6 @@ public class EventManagementFragment extends Fragment {
                                 if (event.endTimestamp > 0 &&
                                         currentTime >= event.endTimestamp) {
 
-                                    // 🔥 DELETE EXPIRED EVENT
                                     eventRef.child(event.eventId).removeValue();
 
                                 } else {
@@ -190,8 +201,6 @@ public class EventManagementFragment extends Fragment {
                 });
     }
 
-
-    // ✅ ADDED METHOD (ONLY THIS PART NEW)
     private void checkExpiredEvents() {
 
         eventRef.addListenerForSingleValueEvent(new ValueEventListener() {

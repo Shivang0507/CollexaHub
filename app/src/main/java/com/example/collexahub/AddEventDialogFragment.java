@@ -315,7 +315,6 @@ public class AddEventDialogFragment extends DialogFragment {
 
         dismiss();
     }
-
     private String formatDateFromTimestamp(long timestamp) {
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(timestamp);

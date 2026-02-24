@@ -294,4 +294,18 @@ public class MainDashboardActivity extends AppCompatActivity
     public void onPaymentError(int code, String response) {
         Toast.makeText(this, "Payment Failed", Toast.LENGTH_SHORT).show();
     }
+    @Override
+    public void onViewRegistrationsClick(EventModel event) {
+
+        RegisteredStudentsFragment fragment =
+                RegisteredStudentsFragment.newInstance(event.eventId);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
 }
+

@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.LinearLayout;
-import android.widget.ImageButton; // ✅ ADDED
+import android.widget.ImageButton;
+import com.example.collexahub.OnEventRegisterClickListener;
+
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,12 +53,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         EventModel event = list.get(position);
 
-        // Basic Info
         holder.tvTitle.setText(event.title);
         holder.tvDate.setText(event.date + " | " + event.time);
         holder.tvVenue.setText(event.venue);
 
-        // Entry Fee
         if (event.paid) {
             holder.tvEntryFee.setText("Entry Fee: ₹" + event.entryFee);
             holder.tvEntryFee.setTextColor(Color.RED);
@@ -69,11 +69,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.btnMyQR.setVisibility(View.GONE);
         holder.layoutAdminActions.setVisibility(View.GONE);
 
-        // ✅ UPDATED ADMIN / TEACHER BLOCK (ONLY ADDED CLICK LOGIC)
+        // ✅ ADDED (reset visibility)
+        holder.btnViewRegistrations.setVisibility(View.GONE);
+
+        // ✅ UPDATED (added volunteer)
         if ("admin".equalsIgnoreCase(userRole) ||
-                "teacher".equalsIgnoreCase(userRole)) {
+                "teacher".equalsIgnoreCase(userRole) ||
+                "volunteer".equalsIgnoreCase(userRole)) {
 
             holder.layoutAdminActions.setVisibility(View.VISIBLE);
+
+            // ✅ ADDED (show button)
+            holder.btnViewRegistrations.setVisibility(View.VISIBLE);
 
             holder.btnEdit.setOnClickListener(v -> {
                 if (listener != null) {
@@ -87,12 +94,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 }
             });
 
+            // ✅ ADDED (click logic)
+            holder.btnViewRegistrations.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onViewRegistrationsClick(event);
+                }
+            });
+
             return;
         }
 
         if ("student".equalsIgnoreCase(userRole)) {
 
-            // ✅ Stop registration after event start time
             if (event.startTimestamp > 0 &&
                     System.currentTimeMillis() >= event.startTimestamp) {
 
@@ -154,9 +167,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         TextView tvTitle, tvDate, tvVenue, tvEntryFee;
         Button btnRegister, btnMyQR;
-        LinearLayout layoutAdminActions;
 
         // ✅ ADDED
+        Button btnViewRegistrations;
+
+        LinearLayout layoutAdminActions;
+
         ImageButton btnEdit, btnDelete;
 
         EventViewHolder(@NonNull View itemView) {
@@ -169,11 +185,23 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
             btnRegister = itemView.findViewById(R.id.btnRegister);
             btnMyQR = itemView.findViewById(R.id.btnMyQR);
-            layoutAdminActions = itemView.findViewById(R.id.layoutAdminActions);
 
             // ✅ ADDED
+            btnViewRegistrations = itemView.findViewById(R.id.btnViewRegistrations);
+
+            layoutAdminActions = itemView.findViewById(R.id.layoutAdminActions);
+
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
         }
     }
+
+    // ✅ ADDED METHOD (only addition)
+//    public interface OnEventRegisterClickListener {
+//        void onRegisterClick(EventModel event);
+//        void onMyQRClick(String qrCode);
+//        void onEditClick(EventModel event);
+//        void onDeleteClick(EventModel event);
+//        void onViewRegistrationsClick(EventModel event); // NEW
+//    }
 }

@@ -55,7 +55,8 @@ public class VolunteerHomeFragment extends Fragment {
                 eventList,
                 "volunteer",
                 currentUid,
-                null   // volunteers don't register
+                (OnEventRegisterClickListener) requireActivity()
+
         );
         rvEvents.setAdapter(adapter);
 
