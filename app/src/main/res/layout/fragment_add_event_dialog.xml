@@ -10,113 +10,152 @@
             style="@style/CollexaCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp">
 
-            <LinearLayout
-                style="@style/SecondaryLinear">
+                <LinearLayout
+                    style="@style/SecondaryLinear">
 
-                <TextView
-                    style="@style/LightTextViwe"
-                    android:text="Create New Event" />
+                    <TextView
+                        style="@style/LightTextViwe"
+                        android:text="Create New Event" />
 
-                <ImageView
-                    android:id="@+id/imgLogo"
-                    style="@style/MainImageView"/>
+                    <ImageView
+                        android:id="@+id/imgLogo"
+                        style="@style/MainImageView"/>
 
-                <EditText
-                    android:id="@+id/etTitle"
-                    style="@style/PrimaryEditText"
-                    android:hint="Event Title" />
+                    <EditText
+                        android:id="@+id/etTitle"
+                        style="@style/PrimaryEditText"
+                        android:hint="Event Title" />
 
-                <EditText
-                    android:id="@+id/etDescription"
-                    style="@style/PrimaryEditText"
-                    android:hint="Event Description"
-                    android:minLines="3"
-                    android:gravity="top"
-                    android:inputType="textMultiLine" />
+                    <EditText
+                        android:id="@+id/etDescription"
+                        style="@style/PrimaryEditText"
+                        android:hint="Event Description"
+                        android:minLines="3"
+                        android:gravity="top"
+                        android:inputType="textMultiLine" />
 
-                <EditText
-                    android:id="@+id/etDate"
-                    style="@style/PrimaryEditText"
-                    android:hint="Event Date (DD/MM/YYYY)"
-                    android:focusable="false"
-                    android:clickable="true"/>
+                    <EditText
+                        android:id="@+id/etDate"
+                        style="@style/PrimaryEditText"
+                        android:hint="Event Date (DD/MM/YYYY)"
+                        android:focusable="false"
+                        android:clickable="true"/>
 
-                <EditText
-                    android:id="@+id/etTime"
-                    style="@style/PrimaryEditText"
-                    android:hint="Event Time (HH:MM)"
-                    android:focusable="false"
-                    android:clickable="true"/>
-                <EditText
-                    android:id="@+id/etEndDate"
-                    style="@style/PrimaryEditText"
-                    android:hint="End Date"
-                    android:focusable="false"/>
+                    <EditText
+                        android:id="@+id/etTime"
+                        style="@style/PrimaryEditText"
+                        android:hint="Event Time (HH:MM)"
+                        android:focusable="false"
+                        android:clickable="true"/>
 
-                <EditText
-                    android:id="@+id/etEndTime"
-                    style="@style/PrimaryEditText"
-                    android:hint="End Time"
-                    android:focusable="false"/>
+                    <EditText
+                        android:id="@+id/etEndDate"
+                        style="@style/PrimaryEditText"
+                        android:hint="End Date"
+                        android:focusable="false"/>
 
-                <EditText
-                    android:id="@+id/etVenue"
-                    style="@style/PrimaryEditText"
-                    android:hint="Venue / Location" />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Is Entry Fee Required?"
-                    android:textStyle="bold"
-                    android:layout_marginTop="12dp"/>
+                    <EditText
+                        android:id="@+id/etEndTime"
+                        style="@style/PrimaryEditText"
+                        android:hint="End Time"
+                        android:focusable="false"/>
 
-                <RadioGroup
-                    style="@style/PrimaryEditText"
-                    android:id="@+id/radioGroupFee"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    <EditText
+                        android:id="@+id/etVenue"
+                        style="@style/PrimaryEditText"
+                        android:hint="Venue / Location" />
 
-                    <RadioButton
-                        android:id="@+id/radioYes"
-                        android:layout_width="wrap_content"
+                    <!-- Entry Fee Section -->
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/text_primary"
-                        android:text="Yes"/>
+                        android:text="Is Entry Fee Required?"
+                        android:textStyle="bold"
+                        android:layout_marginTop="12dp"/>
 
-                    <RadioButton
-                        android:id="@+id/radioNo"
-                        android:layout_width="wrap_content"
+                    <RadioGroup
+                        style="@style/PrimaryEditText"
+                        android:id="@+id/radioGroupFee"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/text_primary"
-                        android:text="No"
-                        android:checked="true"/>
-                </RadioGroup>
+                        android:orientation="horizontal">
 
-                <EditText
-                    style="@style/PrimaryEditText"
-                    android:id="@+id/etEntryFee"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter Entry Fee Amount"
-                    android:inputType="number"
-                    android:visibility="gone"
-                    android:layout_marginTop="8dp"/>
+                        <RadioButton
+                            android:id="@+id/radioYes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:text="Yes"/>
 
+                        <RadioButton
+                            android:id="@+id/radioNo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:text="No"
+                            android:checked="true"/>
+                    </RadioGroup>
 
-                <Button
-                    android:id="@+id/btnPublish"
-                    style="@style/SecondButton"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    android:text="Publish Event" />
+                    <EditText
+                        style="@style/PrimaryEditText"
+                        android:id="@+id/etEntryFee"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter Entry Fee Amount"
+                        android:inputType="number"
+                        android:visibility="gone"
+                        android:layout_marginTop="8dp"/>
 
+                    <!-- NEW: Event Type Section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Event Type"
+                        android:textStyle="bold"
+                        android:layout_marginTop="12dp"/>
 
-            </LinearLayout>
+                    <RadioGroup
+                        style="@style/PrimaryEditText"
+                        android:id="@+id/radioGroupEventType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radioIndividual"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Individual"
+                            android:checked="true"/>
+
+                        <RadioButton
+                            android:id="@+id/radioTeam"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Team Based"/>
+                    </RadioGroup>
+
+                    <EditText
+                        android:id="@+id/etTeamSize"
+                        style="@style/PrimaryEditText"
+                        android:hint="Enter Max Team Size"
+                        android:inputType="number"
+                        android:visibility="gone"
+                        android:layout_marginTop="8dp"/>
+
+                    <Button
+                        android:id="@+id/btnPublish"
+                        style="@style/SecondButton"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:text="Publish Event" />
+
+                </LinearLayout>
             </ScrollView>
 
         </androidx.cardview.widget.CardView>

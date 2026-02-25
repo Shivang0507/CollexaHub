@@ -8,8 +8,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.widget.ImageButton;
-import com.example.collexahub.OnEventRegisterClickListener;
-
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -68,93 +66,135 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.btnRegister.setVisibility(View.GONE);
         holder.btnMyQR.setVisibility(View.GONE);
         holder.layoutAdminActions.setVisibility(View.GONE);
-
-        // ✅ ADDED (reset visibility)
         holder.btnViewRegistrations.setVisibility(View.GONE);
 
-        // ✅ UPDATED (added volunteer)
+        // ================= ADMIN / TEACHER / VOLUNTEER =================
         if ("admin".equalsIgnoreCase(userRole) ||
                 "teacher".equalsIgnoreCase(userRole) ||
                 "volunteer".equalsIgnoreCase(userRole)) {
 
             holder.layoutAdminActions.setVisibility(View.VISIBLE);
-
-            // ✅ ADDED (show button)
             holder.btnViewRegistrations.setVisibility(View.VISIBLE);
 
             holder.btnEdit.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onEditClick(event);
-                }
+                if (listener != null) listener.onEditClick(event);
             });
 
             holder.btnDelete.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onDeleteClick(event);
-                }
+                if (listener != null) listener.onDeleteClick(event);
             });
 
-            // ✅ ADDED (click logic)
             holder.btnViewRegistrations.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onViewRegistrationsClick(event);
-                }
+                if (listener != null) listener.onViewRegistrationsClick(event);
             });
 
             return;
         }
 
+        // ================= STUDENT =================
         if ("student".equalsIgnoreCase(userRole)) {
+
+            holder.btnRegister.setVisibility(View.GONE);
+            holder.btnMyQR.setVisibility(View.GONE);
 
             if (event.startTimestamp > 0 &&
                     System.currentTimeMillis() >= event.startTimestamp) {
-
-                holder.btnRegister.setVisibility(View.GONE);
                 return;
             }
 
             if (currentUid == null) return;
 
-            DatabaseReference ref = FirebaseDatabase.getInstance(DB_URL)
-                    .getReference("events")
-                    .child(event.eventId)
-                    .child("registrations")
-                    .child(currentUid);
+            // ===== INDIVIDUAL EVENT =====
+            if (!event.teamEvent) {
 
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                FirebaseDatabase.getInstance(DB_URL)
+                        .getReference("events")
+                        .child(event.eventId)
+                        .child("registrations")
+                        .child(currentUid)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
 
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                    if (snapshot.exists()) {
+                                if (snapshot.exists()) {
 
-                        holder.btnMyQR.setVisibility(View.VISIBLE);
+                                    holder.btnMyQR.setVisibility(View.VISIBLE);
 
-                        String qrCode =
-                                snapshot.child("qrCode").getValue(String.class);
+                                    String qrCode =
+                                            snapshot.child("qrCode").getValue(String.class);
 
-                        holder.btnMyQR.setOnClickListener(v -> {
-                            if (listener != null && qrCode != null) {
-                                listener.onMyQRClick(qrCode);
+                                    holder.btnMyQR.setOnClickListener(v -> {
+                                        if (listener != null && qrCode != null) {
+                                            listener.onMyQRClick(qrCode);
+                                        }
+                                    });
+
+                                } else {
+
+                                    holder.btnRegister.setVisibility(View.VISIBLE);
+
+                                    holder.btnRegister.setOnClickListener(v -> {
+                                        if (listener != null) {
+                                            listener.onRegisterClick(event);
+                                        }
+                                    });
+                                }
                             }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {}
                         });
 
-                    } else {
+            }
+            // ===== TEAM EVENT =====
+            else {
 
-                        holder.btnRegister.setVisibility(View.VISIBLE);
+                FirebaseDatabase.getInstance(DB_URL)
+                        .getReference("events")
+                        .child(event.eventId)
+                        .child("teams")
+                        .orderByChild("leaderUid")
+                        .equalTo(currentUid)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
 
-                        holder.btnRegister.setOnClickListener(v -> {
-                            if (listener != null) {
-                                listener.onRegisterClick(event);
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                if (snapshot.exists()) {
+
+                                    holder.btnMyQR.setVisibility(View.VISIBLE);
+
+                                    for (DataSnapshot ds : snapshot.getChildren()) {
+
+                                        String qrCode =
+                                                ds.child("qrCode").getValue(String.class);
+
+                                        holder.btnMyQR.setOnClickListener(v -> {
+                                            if (listener != null && qrCode != null) {
+                                                listener.onMyQRClick(qrCode);
+                                            }
+                                        });
+
+                                        break;
+                                    }
+
+                                } else {
+
+                                    holder.btnRegister.setVisibility(View.VISIBLE);
+
+                                    holder.btnRegister.setOnClickListener(v -> {
+                                        if (listener != null) {
+                                            listener.onRegisterClick(event);
+                                        }
+                                    });
+                                }
                             }
-                        });
-                    }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                }
-            });
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {}
+                        });
+            }
         }
     }
 
@@ -167,12 +207,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         TextView tvTitle, tvDate, tvVenue, tvEntryFee;
         Button btnRegister, btnMyQR;
-
-        // ✅ ADDED
         Button btnViewRegistrations;
-
         LinearLayout layoutAdminActions;
-
         ImageButton btnEdit, btnDelete;
 
         EventViewHolder(@NonNull View itemView) {
@@ -185,8 +221,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
             btnRegister = itemView.findViewById(R.id.btnRegister);
             btnMyQR = itemView.findViewById(R.id.btnMyQR);
-
-            // ✅ ADDED
             btnViewRegistrations = itemView.findViewById(R.id.btnViewRegistrations);
 
             layoutAdminActions = itemView.findViewById(R.id.layoutAdminActions);
@@ -195,13 +229,4 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             btnDelete = itemView.findViewById(R.id.btnDelete);
         }
     }
-
-    // ✅ ADDED METHOD (only addition)
-//    public interface OnEventRegisterClickListener {
-//        void onRegisterClick(EventModel event);
-//        void onMyQRClick(String qrCode);
-//        void onEditClick(EventModel event);
-//        void onDeleteClick(EventModel event);
-//        void onViewRegistrationsClick(EventModel event); // NEW
-//    }
 }

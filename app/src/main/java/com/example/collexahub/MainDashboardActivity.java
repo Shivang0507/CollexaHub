@@ -240,7 +240,9 @@ public class MainDashboardActivity extends AppCompatActivity
                         event.eventId,
                         event.title,
                         event.paid,
-                        event.entryFee
+                        event.entryFee,
+                        event.teamEvent,
+                        event.maxTeamSize
                 );
 
         getSupportFragmentManager()

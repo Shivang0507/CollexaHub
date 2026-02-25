@@ -16,47 +16,95 @@
                 style="@style/SecondaryLinear">
 
                 <TextView
-                    style="@style/LightTextViwe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_25sdp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
                     android:text="Event Registration" />
 
                 <ImageView
                     android:id="@+id/imgLogo"
                     style="@style/MainImageView"/>
 
-                <EditText
-                    android:id="@+id/etName"
-                    style="@style/PrimaryEditText"
-                    android:hint="Full Name *"
-                    android:inputType="textPersonName" />
+                <!-- ========================= -->
+                <!-- INDIVIDUAL SECTION (ONLY WRAPPED) -->
+                <!-- ========================= -->
 
-                <EditText
-                    android:id="@+id/etEmail"
-                    style="@style/PrimaryEditText"
-                    android:hint="Email Address *"
-                    android:inputType="textEmailAddress" />
+                <LinearLayout
+                    android:id="@+id/layoutIndividualSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/etPhone"
-                    style="@style/PrimaryEditText"
-                    android:hint="Phone Number *"
-                    android:inputType="phone" />
+                    <EditText
+                        android:id="@+id/etName"
+                        style="@style/PrimaryEditText"
+                        android:hint="Full Name *"
+                        android:inputType="textPersonName" />
 
-                <EditText
-                    android:id="@+id/etEnrollment"
-                    style="@style/PrimaryEditText"
-                    android:hint="Enrollment Number *" />
+                    <EditText
+                        android:id="@+id/etEmail"
+                        style="@style/PrimaryEditText"
+                        android:hint="Email Address *"
+                        android:inputType="textEmailAddress" />
 
-                <EditText
-                    android:id="@+id/etDepartment"
-                    style="@style/PrimaryEditText"
-                    android:hint="Department" />
+                    <EditText
+                        android:id="@+id/etPhone"
+                        style="@style/PrimaryEditText"
+                        android:hint="Phone Number *"
+                        android:inputType="phone" />
 
-                <EditText
-                    android:id="@+id/etSem"
-                    style="@style/PrimaryEditText"
-                    android:hint="Semester *" />
+                    <EditText
+                        android:id="@+id/etEnrollment"
+                        style="@style/PrimaryEditText"
+                        android:hint="Enrollment Number *" />
 
-                <!-- Submit -->
+                    <EditText
+                        android:id="@+id/etDepartment"
+                        style="@style/PrimaryEditText"
+                        android:hint="Department *" />
+
+                    <EditText
+                        android:id="@+id/etSem"
+                        style="@style/PrimaryEditText"
+                        android:hint="Semester *" />
+
+                </LinearLayout>
+
+                <!-- ========================= -->
+                <!-- TEAM SECTION (UNCHANGED) -->
+                <!-- ========================= -->
+
+                <LinearLayout
+                    android:id="@+id/layoutTeamSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginTop="12dp">
+
+                    <TextView
+                        style="@style/LightTextViwe"
+                        android:text="Team Details" />
+
+                    <EditText
+                        android:id="@+id/etTeamName"
+                        style="@style/PrimaryEditText"
+                        android:hint="Team Name *" />
+
+                    <TextView
+                        style="@style/LightTextViwe"
+                        android:text="Team Members" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutTeamMembers"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+
                 <Button
                     android:id="@+id/btnSubmitRegistration"
                     style="@style/SecondButton"

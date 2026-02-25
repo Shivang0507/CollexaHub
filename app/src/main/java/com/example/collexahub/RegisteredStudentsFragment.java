@@ -22,7 +22,8 @@ public class RegisteredStudentsFragment extends Fragment {
     private static final String ARG_EVENT_ID = "event_id";
 
     private String eventId;
-    private boolean isPaidEvent = false; // ✅ ADDED
+    private boolean isPaidEvent = false;
+    private boolean isTeamEvent = false;
 
     private RecyclerView recyclerView;
     private TextView tvTotalCount;
@@ -32,6 +33,7 @@ public class RegisteredStudentsFragment extends Fragment {
 
     private DatabaseReference registrationRef;
     private DatabaseReference usersRef;
+    private DatabaseReference teamRef;
 
     public RegisteredStudentsFragment() {}
 
@@ -60,22 +62,28 @@ public class RegisteredStudentsFragment extends Fragment {
                 .child(eventId)
                 .child("registrations");
 
+        teamRef = database
+                .getReference("events")
+                .child(eventId)
+                .child("teams");
+
         usersRef = database.getReference("users");
 
-        // ✅ ADDED: Fetch paid status from event node
         database.getReference("events")
                 .child(eventId)
-                .child("paid")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        Boolean paid = snapshot.getValue(Boolean.class);
+
+                        Boolean paid = snapshot.child("paid").getValue(Boolean.class);
                         isPaidEvent = paid != null && paid;
+
+                        Boolean team = snapshot.child("teamEvent").getValue(Boolean.class);
+                        isTeamEvent = team != null && team;
                     }
 
                     @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
+                    public void onCancelled(@NonNull DatabaseError error) {}
                 });
     }
 
@@ -114,11 +122,38 @@ public class RegisteredStudentsFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
-        loadRegistrations();
+        loadData();
 
         return view;
     }
 
+    private void loadData() {
+
+        FirebaseDatabase.getInstance(
+                        "https://collexa-hub-default-rtdb.asia-southeast1.firebasedatabase.app"
+                )
+                .getReference("events")
+                .child(eventId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        Boolean team = snapshot.child("teamEvent").getValue(Boolean.class);
+                        isTeamEvent = team != null && team;
+
+                        if (isTeamEvent) {
+                            loadTeams();
+                        } else {
+                            loadRegistrations();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+    }
+
+    // ✅ YOUR OLD LOGIC — UNTOUCHED
     private void loadRegistrations() {
 
         registrationRef.addListenerForSingleValueEvent(
@@ -137,16 +172,8 @@ public class RegisteredStudentsFragment extends Fragment {
                             String enrollment = ds.child("enrollment").getValue(String.class);
                             String semester = ds.child("semester").getValue(String.class);
                             String qrCode = ds.child("qrCode").getValue(String.class);
-                            Boolean verified = ds.child("verified").getValue(Boolean.class);
 
-                            // ✅ UPDATED PAYMENT LOGIC
-                            String paymentStatus = null;
-
-                            if (isPaidEvent) {
-                                paymentStatus = "Paid";
-                            } else {
-                                paymentStatus = "Free";
-                            }
+                            String paymentStatus = isPaidEvent ? "Paid" : "Free";
 
                             RegisteredStudentModel model =
                                     new RegisteredStudentModel(
@@ -167,48 +194,54 @@ public class RegisteredStudentsFragment extends Fragment {
                     }
 
                     @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
+                    public void onCancelled(@NonNull DatabaseError error) {}
                 }
         );
     }
 
-    private void fetchUserDetails(String uid,
-                                  String qrCode,
-                                  String paymentStatus) {
+    // ✅ FIXED TEAM LOADER (STRUCTURED DB)
+    private void loadTeams() {
 
-        usersRef.child(uid)
-                .addListenerForSingleValueEvent(
-                        new ValueEventListener() {
+        teamRef.addListenerForSingleValueEvent(
+                new ValueEventListener() {
 
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                                String name = snapshot.child("name").getValue(String.class);
-                                String phone = snapshot.child("phone").getValue(String.class);
-                                String enrollment = snapshot.child("enrollmentNo").getValue(String.class);
-                                String semester = snapshot.child("semester").getValue(String.class);
+                        studentList.clear();
 
-                                RegisteredStudentModel model =
-                                        new RegisteredStudentModel(
-                                                uid,
-                                                name != null ? name : "N/A",
-                                                phone != null ? phone : "N/A",
-                                                enrollment != null ? enrollment : "N/A",
-                                                semester != null ? semester : "N/A",
-                                                paymentStatus != null ? paymentStatus : "Unpaid",
-                                                qrCode
-                                        );
+                        for (DataSnapshot ds : snapshot.getChildren()) {
 
-                                studentList.add(model);
+                            String teamName = ds.child("teamName").getValue(String.class);
+                            String leaderName = ds.child("leader").child("name").getValue(String.class);
+                            String leaderPhone = ds.child("leader").child("phone").getValue(String.class);
+                            String leaderEnrollment = ds.child("leader").child("enrollment").getValue(String.class);
+                            String leaderSemester = ds.child("leader").child("semester").getValue(String.class);
+                            String qrCode = ds.child("qrCode").getValue(String.class);
 
-                                tvTotalCount.setText("Total Registered: " + studentList.size());
-                                adapter.notifyDataSetChanged();
-                            }
+                            String paymentStatus = isPaidEvent ? "Paid" : "Free";
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                            }
-                        });
+                            RegisteredStudentModel model =
+                                    new RegisteredStudentModel(
+                                            ds.getKey(),
+                                            teamName != null ? teamName : "Team",
+                                            leaderPhone != null ? leaderPhone : "N/A",
+                                            leaderEnrollment != null ? leaderEnrollment : "N/A",
+                                            leaderSemester != null ? leaderSemester : "N/A",
+                                            paymentStatus,
+                                            qrCode
+                                    );
+
+                            studentList.add(model);
+                        }
+
+                        tvTotalCount.setText("Total Teams: " + studentList.size());
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                }
+        );
     }
 }

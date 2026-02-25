@@ -56,6 +56,24 @@ public class RegisteredStudentsAdapter
             holder.tvPaymentStatus.setTextColor(Color.parseColor("#2E7D32"));
         }
 
+        // ✅ TEAM DISPLAY LOGIC (OLD STRUCTURE KEPT SAFE)
+        if (model.semester != null &&
+                !model.semester.equals("-") &&
+                model.semester.contains("•")) {
+
+            holder.tvTeamMembers.setVisibility(View.VISIBLE);
+            holder.tvTeamMembers.setText("Members:\n" + model.semester);
+
+            holder.tvEnrollment.setVisibility(View.GONE);
+            holder.tvSemester.setVisibility(View.GONE);
+
+        } else {
+
+            holder.tvTeamMembers.setVisibility(View.GONE);
+            holder.tvEnrollment.setVisibility(View.VISIBLE);
+            holder.tvSemester.setVisibility(View.VISIBLE);
+        }
+
         holder.btnViewQR.setOnClickListener(v -> {
             if (listener != null && model.qrCode != null) {
                 listener.onQRClick(model.qrCode);
@@ -70,7 +88,9 @@ public class RegisteredStudentsAdapter
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvName, tvEnrollment, tvSemester, tvPhone, tvPaymentStatus;
+        TextView tvName, tvEnrollment, tvSemester,
+                tvPhone, tvPaymentStatus, tvTeamMembers;
+
         ImageButton btnViewQR;
 
         ViewHolder(@NonNull View itemView) {
@@ -81,6 +101,10 @@ public class RegisteredStudentsAdapter
             tvSemester = itemView.findViewById(R.id.tvSemester);
             tvPhone = itemView.findViewById(R.id.tvPhone);
             tvPaymentStatus = itemView.findViewById(R.id.tvPaymentStatus);
+
+            // ✅ NEW (you already added in XML)
+            tvTeamMembers = itemView.findViewById(R.id.tvTeamMembers);
+
             btnViewQR = itemView.findViewById(R.id.btnViewQR);
         }
     }
