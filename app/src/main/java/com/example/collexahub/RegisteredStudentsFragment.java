@@ -224,13 +224,52 @@ public class RegisteredStudentsFragment extends Fragment {
                             RegisteredStudentModel model =
                                     new RegisteredStudentModel(
                                             ds.getKey(),
-                                            teamName != null ? teamName : "Team",
+                                            leaderName != null ? leaderName : "Leader",   // ✅ FIXED
                                             leaderPhone != null ? leaderPhone : "N/A",
                                             leaderEnrollment != null ? leaderEnrollment : "N/A",
                                             leaderSemester != null ? leaderSemester : "N/A",
                                             paymentStatus,
                                             qrCode
                                     );
+                            // ================= NEW TEAM DATA (ADDED ONLY) =================
+
+                            model.eventType = "Team";
+                            model.teamName = teamName != null ? teamName : "Team";
+                            model.leaderSemester = leaderSemester != null ? leaderSemester : "N/A";
+
+// ---- Co-Leader ----
+                            String coName = ds.child("coLeader").child("name").getValue(String.class);
+                            String coPhone = ds.child("coLeader").child("phone").getValue(String.class);
+                            String coEnroll = ds.child("coLeader").child("enrollment").getValue(String.class);
+                            String coSem = ds.child("coLeader").child("semester").getValue(String.class);
+
+                            model.coLeaderDetails =
+                                    "\n" + "Name: " + (coName != null ? coName : "N/A") + "\n" +
+                                            "Enrollment: " + (coEnroll != null ? coEnroll : "N/A") + "\n" +
+                                            "Semester: " + (coSem != null ? coSem : "N/A") + "\n" +
+                                            "Contact: " + (coPhone != null ? coPhone : "N/A") ;
+
+// ---- Members ----
+                            StringBuilder membersBuilder = new StringBuilder();
+                            int count = 1;
+
+                            for (DataSnapshot memberSnap : ds.child("members").getChildren()) {
+
+                                String mName = memberSnap.child("name").getValue(String.class);
+                                String mPhone = memberSnap.child("phone").getValue(String.class);
+                                String mEnroll = memberSnap.child("enrollment").getValue(String.class);
+                                String mSem = memberSnap.child("semester").getValue(String.class);
+
+                                membersBuilder.append("\n👥Member ").append(count).append("\n\n")
+                                        .append("Name: ").append(mName != null ? mName : "N/A").append("\n")
+                                        .append("Enrollment: ").append(mEnroll != null ? mEnroll : "N/A").append("\n")
+                                        .append("Contact: ").append(mPhone != null ? mPhone : "N/A").append("\n")
+                                        .append("Semester: ").append(mSem != null ? mSem : "N/A").append("\n");
+
+                                count++;
+                            }
+
+                            model.membersDetails = membersBuilder.toString();
 
                             studentList.add(model);
                         }

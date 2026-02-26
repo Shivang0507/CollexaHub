@@ -14,6 +14,8 @@
         android:orientation="vertical"
         android:padding="@dimen/_12sdp">
 
+        <!-- ================= OLD INDIVIDUAL CODE (UNCHANGED) ================= -->
+
         <TextView
             android:id="@+id/tvName"
             android:textSize="@dimen/_12sdp"
@@ -28,13 +30,12 @@
             android:layout_height="wrap_content"/>
 
         <TextView
-            android:id="@+id/tvSemester"
+            android:id="@+id/tvPhone"
             android:textSize="@dimen/_10sdp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-
         <TextView
-            android:id="@+id/tvPhone"
+            android:id="@+id/tvSemester"
             android:textSize="@dimen/_10sdp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -45,13 +46,106 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
         <TextView
             android:id="@+id/tvTeamMembers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/_10sdp"
             android:visibility="gone"/>
+
+        <!-- ================= NEW TEAM SECTION (ADDED ONLY) ================= -->
+
+        <LinearLayout
+            android:id="@+id/layoutTeamSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!-- Team Name -->
+            <TextView
+                android:id="@+id/tvTeamName"
+                android:textStyle="bold"
+                android:textSize="@dimen/_12sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+            <!-- Leader Details -->
+            <TextView
+                android:id="@+id/tvLeaderName"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:textSize="@dimen/_10sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/tvLeaderEnrollment"
+                android:textSize="@dimen/_10sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/tvLeaderPhone"
+                android:textSize="@dimen/_10sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/tvLeaderSemester"
+                android:textSize="@dimen/_10sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+            <!-- Hidden Members Layout -->
+            <LinearLayout
+                android:id="@+id/layoutTeamDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tvCoLeaderDetails"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:textSize="@dimen/_10sdp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tvMembersDetails"
+                    android:textSize="@dimen/_10sdp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+            <TextView
+                android:id="@+id/tvTeamPaymentStatus"
+                android:textSize="@dimen/_10sdp"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+            <!-- See More Button -->
+            <Button
+                android:id="@+id/btnSeeMore"
+                style="@style/SecondButton"
+                android:layout_marginVertical="@dimen/_4sdp"
+                android:text="See More Details"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:textSize="@dimen/_10sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <!-- ================================================================ -->
+
     </LinearLayout>
+
+    <!-- ================= OLD QR BUTTON (UNCHANGED) ================= -->
 
     <LinearLayout
         android:gravity="end"
@@ -59,6 +153,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="@dimen/_12sdp">
+
         <ImageButton
             android:id="@+id/btnViewQR"
             android:layout_width="@dimen/_35sdp"
