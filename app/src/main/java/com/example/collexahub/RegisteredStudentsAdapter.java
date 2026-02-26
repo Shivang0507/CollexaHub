@@ -114,6 +114,7 @@ public class RegisteredStudentsAdapter
 
             holder.tvTeamPaymentStatus.setTextColor(Color.parseColor("#2E7D32"));
 
+
             holder.tvTeamName.setText("Team: " + model.teamName);
             String leaderText = "⭐ Leader\n" +
                     "Name: " + model.name + "\n" +
