@@ -70,8 +70,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         // ================= ADMIN / TEACHER / VOLUNTEER =================
         if ("admin".equalsIgnoreCase(userRole) ||
-                "teacher".equalsIgnoreCase(userRole) ||
-                "volunteer".equalsIgnoreCase(userRole)) {
+                "teacher".equalsIgnoreCase(userRole)) {
 
             holder.layoutAdminActions.setVisibility(View.VISIBLE);
             holder.btnViewRegistrations.setVisibility(View.VISIBLE);
@@ -83,6 +82,17 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             holder.btnDelete.setOnClickListener(v -> {
                 if (listener != null) listener.onDeleteClick(event);
             });
+
+            holder.btnViewRegistrations.setOnClickListener(v -> {
+                if (listener != null) listener.onViewRegistrationsClick(event);
+            });
+
+            return;
+        }
+        if ("volunteer".equalsIgnoreCase(userRole)) {
+
+            holder.layoutAdminActions.setVisibility(View.GONE); // hide edit/delete
+            holder.btnViewRegistrations.setVisibility(View.VISIBLE);
 
             holder.btnViewRegistrations.setOnClickListener(v -> {
                 if (listener != null) listener.onViewRegistrationsClick(event);

@@ -112,9 +112,7 @@ public class RegisteredStudentsAdapter
             holder.tvTeamPaymentStatus.setVisibility(View.VISIBLE);
             holder.tvTeamPaymentStatus.setText("Payment: " + model.paymentStatus);
 
-            if ("Paid".equalsIgnoreCase(model.paymentStatus)) {
-                holder.tvTeamPaymentStatus.setTextColor(Color.parseColor("#2E7D32"));
-            }
+            holder.tvTeamPaymentStatus.setTextColor(Color.parseColor("#2E7D32"));
 
             holder.tvTeamName.setText("Team: " + model.teamName);
             String leaderText = "⭐ Leader\n" +
