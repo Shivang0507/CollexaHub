@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DatabaseReference;
 import com.razorpay.Checkout;
 
 import org.json.JSONObject;
@@ -340,12 +341,19 @@ public class EventRegistrationFragment extends Fragment {
                             System.currentTimeMillis()
                     );
 
-            db.getReference("events")
+            DatabaseReference regRef = db.getReference("events")
                     .child(eventId)
                     .child("registrations")
-                    .child(currentUid)
-                    .setValue(model)
-                    .addOnSuccessListener(a -> navigateHome());
+                    .child(currentUid);
+
+            regRef.setValue(model)
+                    .addOnSuccessListener(a -> {
+
+                        // 🔥 ONLY NEW ADDITION (nothing else changed)
+                        regRef.child("eventTitle").setValue(eventTitle);
+
+                        navigateHome();
+                    });
 
         } else {
 
@@ -360,12 +368,11 @@ public class EventRegistrationFragment extends Fragment {
             Map<String, Object> teamData = new HashMap<>();
 
             teamData.put("teamName", etTeamName.getText().toString());
+            teamData.put("eventTitle", eventTitle);
             teamData.put("qrCode", qrCode);
             teamData.put("leaderUid", currentUid);
-
-            // =========================
-            // LEADER DETAILS
-            // =========================
+            teamData.put("verified", false);
+            teamData.put("verifiedAt", 0L);
 
             Map<String, Object> leader = new HashMap<>();
 
@@ -377,10 +384,6 @@ public class EventRegistrationFragment extends Fragment {
 
             teamData.put("leader", leader);
 
-            // =========================
-            // CO-LEADER DETAILS
-            // =========================
-
             Map<String, Object> coLeader = new HashMap<>();
 
             coLeader.put("name", teamMemberInputs.get(1).get("name").getText().toString());
@@ -389,10 +392,6 @@ public class EventRegistrationFragment extends Fragment {
             coLeader.put("semester", teamMemberInputs.get(1).get("semester").getText().toString());
 
             teamData.put("coLeader", coLeader);
-
-            // =========================
-            // MEMBERS
-            // =========================
 
             Map<String, Object> members = new HashMap<>();
 

@@ -153,7 +153,7 @@ public class RegisteredStudentsFragment extends Fragment {
                 });
     }
 
-    // ✅ YOUR OLD LOGIC — UNTOUCHED
+    // ================= INDIVIDUAL =================
     private void loadRegistrations() {
 
         registrationRef.addListenerForSingleValueEvent(
@@ -173,6 +173,9 @@ public class RegisteredStudentsFragment extends Fragment {
                             String semester = ds.child("semester").getValue(String.class);
                             String qrCode = ds.child("qrCode").getValue(String.class);
 
+                            // ✅ NEW ADDITION
+                            String eventTitle = ds.child("eventTitle").getValue(String.class);
+
                             String paymentStatus = isPaidEvent ? "Paid" : "Free";
 
                             RegisteredStudentModel model =
@@ -183,7 +186,8 @@ public class RegisteredStudentsFragment extends Fragment {
                                             enrollment != null ? enrollment : "N/A",
                                             semester != null ? semester : "N/A",
                                             paymentStatus,
-                                            qrCode
+                                            qrCode,
+                                            eventTitle != null ? eventTitle : ""
                                     );
 
                             studentList.add(model);
@@ -199,7 +203,7 @@ public class RegisteredStudentsFragment extends Fragment {
         );
     }
 
-    // ✅ FIXED TEAM LOADER (STRUCTURED DB)
+    // ================= TEAM =================
     private void loadTeams() {
 
         teamRef.addListenerForSingleValueEvent(
@@ -219,37 +223,39 @@ public class RegisteredStudentsFragment extends Fragment {
                             String leaderSemester = ds.child("leader").child("semester").getValue(String.class);
                             String qrCode = ds.child("qrCode").getValue(String.class);
 
+                            // ✅ NEW ADDITION
+                            String eventTitle = ds.child("eventTitle").getValue(String.class);
+
                             String paymentStatus = isPaidEvent ? "Paid" : "Free";
 
                             RegisteredStudentModel model =
                                     new RegisteredStudentModel(
                                             ds.getKey(),
-                                            leaderName != null ? leaderName : "Leader",   // ✅ FIXED
+                                            leaderName != null ? leaderName : "Leader",
                                             leaderPhone != null ? leaderPhone : "N/A",
                                             leaderEnrollment != null ? leaderEnrollment : "N/A",
                                             leaderSemester != null ? leaderSemester : "N/A",
                                             paymentStatus,
-                                            qrCode
+                                            qrCode,
+                                            eventTitle != null ? eventTitle : ""
                                     );
-                            // ================= NEW TEAM DATA (ADDED ONLY) =================
 
+                            // YOUR OLD TEAM LOGIC UNCHANGED
                             model.eventType = "Team";
                             model.teamName = teamName != null ? teamName : "Team";
                             model.leaderSemester = leaderSemester != null ? leaderSemester : "N/A";
 
-// ---- Co-Leader ----
                             String coName = ds.child("coLeader").child("name").getValue(String.class);
                             String coPhone = ds.child("coLeader").child("phone").getValue(String.class);
                             String coEnroll = ds.child("coLeader").child("enrollment").getValue(String.class);
                             String coSem = ds.child("coLeader").child("semester").getValue(String.class);
 
                             model.coLeaderDetails =
-                                    "\n" + "Name: " + (coName != null ? coName : "N/A") + "\n" +
+                                    "\nName: " + (coName != null ? coName : "N/A") + "\n" +
                                             "Enrollment: " + (coEnroll != null ? coEnroll : "N/A") + "\n" +
                                             "Semester: " + (coSem != null ? coSem : "N/A") + "\n" +
-                                            "Contact: " + (coPhone != null ? coPhone : "N/A") ;
+                                            "Contact: " + (coPhone != null ? coPhone : "N/A");
 
-// ---- Members ----
                             StringBuilder membersBuilder = new StringBuilder();
                             int count = 1;
 
@@ -260,7 +266,7 @@ public class RegisteredStudentsFragment extends Fragment {
                                 String mEnroll = memberSnap.child("enrollment").getValue(String.class);
                                 String mSem = memberSnap.child("semester").getValue(String.class);
 
-                                membersBuilder.append("\n👥Member ").append(count).append("\n\n")
+                                membersBuilder.append("\nMember ").append(count).append("\n")
                                         .append("Name: ").append(mName != null ? mName : "N/A").append("\n")
                                         .append("Enrollment: ").append(mEnroll != null ? mEnroll : "N/A").append("\n")
                                         .append("Contact: ").append(mPhone != null ? mPhone : "N/A").append("\n")

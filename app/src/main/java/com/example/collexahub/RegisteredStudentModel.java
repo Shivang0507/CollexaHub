@@ -11,6 +11,8 @@ public class RegisteredStudentModel {
     public String paymentStatus;
     public String qrCode;
 
+    public String eventTitle;
+
     // ================= NEW TEAM FIELDS (ADDED ONLY) =================
     public String eventType;           // "Individual" or "Team"
     public String teamName;
@@ -32,7 +34,8 @@ public class RegisteredStudentModel {
                                   String enrollmentNo,
                                   String semester,
                                   String paymentStatus,
-                                  String qrCode) {
+                                  String qrCode,
+                                  String eventTitle) {
 
         this.uid = uid;
         this.name = name;
@@ -41,5 +44,6 @@ public class RegisteredStudentModel {
         this.semester = semester;
         this.paymentStatus = paymentStatus;
         this.qrCode = qrCode;
+        this.eventTitle = eventTitle;
     }
 }
