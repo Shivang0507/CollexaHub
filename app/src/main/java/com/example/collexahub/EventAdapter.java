@@ -68,7 +68,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.layoutAdminActions.setVisibility(View.GONE);
         holder.btnViewRegistrations.setVisibility(View.GONE);
 
-        // ================= ADMIN / TEACHER / VOLUNTEER =================
+        // ================= ADMIN / TEACHER =================
         if ("admin".equalsIgnoreCase(userRole) ||
                 "teacher".equalsIgnoreCase(userRole)) {
 
@@ -89,9 +89,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
             return;
         }
+
+        // ================= VOLUNTEER =================
         if ("volunteer".equalsIgnoreCase(userRole)) {
 
-            holder.layoutAdminActions.setVisibility(View.GONE); // hide edit/delete
+            holder.layoutAdminActions.setVisibility(View.GONE);
             holder.btnViewRegistrations.setVisibility(View.VISIBLE);
 
             holder.btnViewRegistrations.setOnClickListener(v -> {
@@ -134,11 +136,30 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                                     String qrCode =
                                             snapshot.child("qrCode").getValue(String.class);
 
-                                    holder.btnMyQR.setOnClickListener(v -> {
-                                        if (listener != null && qrCode != null) {
-                                            listener.onMyQRClick(qrCode);
-                                        }
-                                    });
+                                    Boolean verified =
+                                            snapshot.child("verified").getValue(Boolean.class);
+
+                                    if (verified != null && verified) {
+
+                                        holder.btnMyQR.setEnabled(false);
+                                        holder.btnMyQR.setAlpha(0.5f);
+
+                                        holder.btnMyQR.setOnClickListener(v ->
+                                                new android.app.AlertDialog.Builder(v.getContext())
+                                                        .setTitle("Already Verified")
+                                                        .setMessage("You are already verified.")
+                                                        .setPositiveButton("OK", null)
+                                                        .show()
+                                        );
+
+                                    } else {
+
+                                        holder.btnMyQR.setOnClickListener(v -> {
+                                            if (listener != null && qrCode != null) {
+                                                listener.onMyQRClick(qrCode);
+                                            }
+                                        });
+                                    }
 
                                 } else {
 
@@ -180,11 +201,30 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                                         String qrCode =
                                                 ds.child("qrCode").getValue(String.class);
 
-                                        holder.btnMyQR.setOnClickListener(v -> {
-                                            if (listener != null && qrCode != null) {
-                                                listener.onMyQRClick(qrCode);
-                                            }
-                                        });
+                                        Boolean verified =
+                                                ds.child("verified").getValue(Boolean.class);
+
+                                        if (verified != null && verified) {
+
+                                            holder.btnMyQR.setEnabled(false);
+                                            holder.btnMyQR.setAlpha(0.5f);
+
+                                            holder.btnMyQR.setOnClickListener(v ->
+                                                    new android.app.AlertDialog.Builder(v.getContext())
+                                                            .setTitle("Already Verified")
+                                                            .setMessage("Your team is already verified.")
+                                                            .setPositiveButton("OK", null)
+                                                            .show()
+                                            );
+
+                                        } else {
+
+                                            holder.btnMyQR.setOnClickListener(v -> {
+                                                if (listener != null && qrCode != null) {
+                                                    listener.onMyQRClick(qrCode);
+                                                }
+                                            });
+                                        }
 
                                         break;
                                     }

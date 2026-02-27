@@ -216,7 +216,10 @@ public class MainDashboardActivity extends AppCompatActivity
                         .show(getSupportFragmentManager(), "add_event");
             }
         }
+        else if (id == R.id.nav_scan_qr) {
 
+            loadFragment(new QRScannerFragment());
+        }
         else if (id == R.id.nav_logout) {
             sessionManager.logout();
             FirebaseAuth.getInstance().signOut();
