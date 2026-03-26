@@ -55,7 +55,6 @@ public class MainDashboardActivity extends AppCompatActivity
             return;
         }
 
-        // ✅ ADDED: Delete expired events whenever dashboard opens
         deleteExpiredEvents();
 
         toolbar = findViewById(R.id.toolbar);
@@ -98,7 +97,6 @@ public class MainDashboardActivity extends AppCompatActivity
                 });
     }
 
-    // ✅ ADDED METHOD (Nothing else changed)
     private void deleteExpiredEvents() {
 
         FirebaseDatabase.getInstance(DB_URL)
@@ -313,4 +311,3 @@ public class MainDashboardActivity extends AppCompatActivity
     }
 
 }
-

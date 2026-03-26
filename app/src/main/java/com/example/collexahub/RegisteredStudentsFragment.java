@@ -173,7 +173,6 @@ public class RegisteredStudentsFragment extends Fragment {
                             String semester = ds.child("semester").getValue(String.class);
                             String qrCode = ds.child("qrCode").getValue(String.class);
 
-                            // ✅ NEW ADDITION
                             String eventTitle = ds.child("eventTitle").getValue(String.class);
 
                             String paymentStatus = isPaidEvent ? "Paid" : "Free";
@@ -223,7 +222,6 @@ public class RegisteredStudentsFragment extends Fragment {
                             String leaderSemester = ds.child("leader").child("semester").getValue(String.class);
                             String qrCode = ds.child("qrCode").getValue(String.class);
 
-                            // ✅ NEW ADDITION
                             String eventTitle = ds.child("eventTitle").getValue(String.class);
 
                             String paymentStatus = isPaidEvent ? "Paid" : "Free";
@@ -240,7 +238,6 @@ public class RegisteredStudentsFragment extends Fragment {
                                             eventTitle != null ? eventTitle : ""
                                     );
 
-                            // YOUR OLD TEAM LOGIC UNCHANGED
                             model.eventType = "Team";
                             model.teamName = teamName != null ? teamName : "Team";
                             model.leaderSemester = leaderSemester != null ? leaderSemester : "N/A";

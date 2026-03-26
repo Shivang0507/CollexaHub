@@ -17,11 +17,9 @@ public class EventModel implements Serializable {
     public boolean paid;
     public String entryFee;
 
-    // Added
     public long startTimestamp;
     public long endTimestamp;
 
-    // ✅ NEW (Team Event Fields)
     public boolean teamEvent;
     public int maxTeamSize;
 
@@ -43,11 +41,9 @@ public class EventModel implements Serializable {
         this.createdByRole = createdByRole;
         this.timestamp = timestamp;
 
-        // Default values (KEEPED)
         this.paid = false;
         this.entryFee = "0";
 
-        // Default Team values
         this.teamEvent = false;
         this.maxTeamSize = 0;
     }
@@ -70,7 +66,6 @@ public class EventModel implements Serializable {
         this.paid = paid;
         this.entryFee = entryFee;
 
-        // Default Team values
         this.teamEvent = false;
         this.maxTeamSize = 0;
     }
@@ -96,12 +91,10 @@ public class EventModel implements Serializable {
         this.startTimestamp = startTimestamp;
         this.endTimestamp = endTimestamp;
 
-        // Default Team values
         this.teamEvent = false;
         this.maxTeamSize = 0;
     }
 
-    // ✅ NEW Constructor (Team Event Support)
     public EventModel(String eventId, String title, String description,
                       String date, String time, String venue,
                       String createdByUid, String createdByRole,
@@ -135,7 +128,7 @@ public class EventModel implements Serializable {
         return entryFee;
     }
 
-    // ✅ NEW Getters (Required for Team Events)
+
     public boolean isTeamEvent() {
         return teamEvent;
     }

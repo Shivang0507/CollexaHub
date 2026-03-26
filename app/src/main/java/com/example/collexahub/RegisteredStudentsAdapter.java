@@ -52,7 +52,7 @@ public class RegisteredStudentsAdapter
 
         RegisteredStudentModel model = list.get(position);
 
-        // ================= OLD CODE (UNCHANGED) =================
+
 
         holder.tvName.setText(model.name);
         holder.tvEnrollment.setText("Enrollment No: " + model.enrollmentNo);
@@ -90,25 +90,22 @@ public class RegisteredStudentsAdapter
             }
         });
 
-        // ==========================================================
-        // ================= NEW TEAM SECTION (ADDED ONLY) ==========
-        // ==========================================================
+
+        // ================= NEW TEAM SECTION ==========
+
 
         if ("Team".equalsIgnoreCase(model.eventType)) {
 
             holder.layoutTeamSection.setVisibility(View.VISIBLE);
 
-            // 🔴 Hide old individual views
             holder.tvName.setVisibility(View.GONE);
             holder.tvEnrollment.setVisibility(View.GONE);
             holder.tvSemester.setVisibility(View.GONE);
             holder.tvPhone.setVisibility(View.GONE);
             holder.tvTeamMembers.setVisibility(View.GONE);
 
-            // 🔴 Hide old payment
             holder.tvPaymentStatus.setVisibility(View.GONE);
 
-            // 🟢 Show Team Payment
             holder.tvTeamPaymentStatus.setVisibility(View.VISIBLE);
             holder.tvTeamPaymentStatus.setText("Payment: " + model.paymentStatus);
 
@@ -142,7 +139,6 @@ public class RegisteredStudentsAdapter
 
             holder.tvLeaderName.setText(leaderSpannable);
 
-// Hide unused fields
             holder.tvLeaderEnrollment.setVisibility(View.GONE);
             holder.tvLeaderSemester.setVisibility(View.GONE);
             holder.tvLeaderPhone.setVisibility(View.GONE);
@@ -162,7 +158,6 @@ public class RegisteredStudentsAdapter
 
                     SpannableString coSpannable = new SpannableString(coText);
 
-// Make entire first line (emoji + Co-Leader) bold & bigger
                     int endIndex = coText.indexOf("\n");
 
                     coSpannable.setSpan(
@@ -214,16 +209,13 @@ public class RegisteredStudentsAdapter
 
             holder.layoutTeamSection.setVisibility(View.GONE);
 
-            // 🟢 Show old views again
             holder.tvName.setVisibility(View.VISIBLE);
             holder.tvEnrollment.setVisibility(View.VISIBLE);
             holder.tvSemester.setVisibility(View.VISIBLE);
             holder.tvPhone.setVisibility(View.VISIBLE);
 
-            // 🟢 Show old payment
             holder.tvPaymentStatus.setVisibility(View.VISIBLE);
 
-            // 🔴 Hide team payment
             holder.tvTeamPaymentStatus.setVisibility(View.GONE);
         }
     }
@@ -235,19 +227,17 @@ public class RegisteredStudentsAdapter
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        // OLD VIEWS
         TextView tvName, tvEnrollment, tvSemester,
                 tvPhone, tvPaymentStatus, tvTeamMembers;
 
         ImageButton btnViewQR;
 
-        // NEW TEAM VIEWS
+        // TEAM VIEWS
         LinearLayout layoutTeamSection, layoutTeamDetails;
         TextView tvTeamName, tvLeaderName, tvLeaderEnrollment,
                 tvLeaderSemester, tvLeaderPhone,
                 tvCoLeaderDetails, tvMembersDetails;
 
-        // NEW TEAM PAYMENT
         TextView tvTeamPaymentStatus;
 
         Button btnSeeMore;
@@ -255,7 +245,6 @@ public class RegisteredStudentsAdapter
         ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            // OLD
             tvName = itemView.findViewById(R.id.tvName);
             tvEnrollment = itemView.findViewById(R.id.tvEnrollment);
             tvSemester = itemView.findViewById(R.id.tvSemester);
@@ -264,7 +253,6 @@ public class RegisteredStudentsAdapter
             tvTeamMembers = itemView.findViewById(R.id.tvTeamMembers);
             btnViewQR = itemView.findViewById(R.id.btnViewQR);
 
-            // NEW
             layoutTeamSection = itemView.findViewById(R.id.layoutTeamSection);
             layoutTeamDetails = itemView.findViewById(R.id.layoutTeamDetails);
             tvTeamName = itemView.findViewById(R.id.tvTeamName);

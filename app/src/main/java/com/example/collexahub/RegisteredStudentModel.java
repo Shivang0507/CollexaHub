@@ -2,7 +2,7 @@ package com.example.collexahub;
 
 public class RegisteredStudentModel {
 
-    // ================= OLD FIELDS (UNCHANGED) =================
+
     public String uid;
     public String name;
     public String phone;
@@ -13,21 +13,19 @@ public class RegisteredStudentModel {
 
     public String eventTitle;
 
-    // ================= NEW TEAM FIELDS (ADDED ONLY) =================
-    public String eventType;           // "Individual" or "Team"
+    // ================= NEW TEAM FIELDS =================
+    public String eventType;
     public String teamName;
 
-    public String leaderSemester;      // Leader semester (for team display)
+    public String leaderSemester;
 
-    public String coLeaderDetails;     // Full formatted co-leader details
-    public String membersDetails;      // Full formatted members list
+    public String coLeaderDetails;
+    public String membersDetails;
 
-    // ================= EMPTY CONSTRUCTOR =================
+
     public RegisteredStudentModel() {
-        // Required empty constructor
     }
 
-    // ================= OLD CONSTRUCTOR (UNCHANGED) =================
     public RegisteredStudentModel(String uid,
                                   String name,
                                   String phone,

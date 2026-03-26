@@ -172,7 +172,7 @@ public class ProfileFragment extends Fragment {
 
     private void updateSensitiveFields(String email, String newPassword) {
 
-        // EMAIL
+
         if (!email.equals(user.getEmail())) {
             user.updateEmail(email)
                     .addOnSuccessListener(unused ->

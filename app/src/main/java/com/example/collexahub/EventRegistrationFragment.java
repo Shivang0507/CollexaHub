@@ -42,8 +42,8 @@ public class EventRegistrationFragment extends Fragment {
     private EditText etName, etEmail, etPhone,
             etEnrollment, etDepartment, etSem;
 
-    private LinearLayout layoutIndividualSection; // ✅ ADDED
-    private LinearLayout layoutTeamSection;       // ✅ ADDED
+    private LinearLayout layoutIndividualSection;
+    private LinearLayout layoutTeamSection;
 
     private LinearLayout layoutTeamMembers;
     private EditText etTeamName;
@@ -88,7 +88,6 @@ public class EventRegistrationFragment extends Fragment {
 
         currentUid = FirebaseAuth.getInstance().getUid();
 
-        // OLD FIELDS (UNCHANGED)
         etName = view.findViewById(R.id.etName);
         etEmail = view.findViewById(R.id.etEmail);
         etPhone = view.findViewById(R.id.etPhone);
@@ -96,14 +95,12 @@ public class EventRegistrationFragment extends Fragment {
         etDepartment = view.findViewById(R.id.etDepartment);
         etSem = view.findViewById(R.id.etSem);
 
-        // ✅ NEW VISIBILITY LAYOUTS
         layoutIndividualSection = view.findViewById(R.id.layoutIndividualSection);
         layoutTeamSection = view.findViewById(R.id.layoutTeamSection);
 
         layoutTeamMembers = view.findViewById(R.id.layoutTeamMembers);
         etTeamName = view.findViewById(R.id.etTeamName);
 
-        // ✅ VISIBILITY CONTROL
         if (isTeamEvent) {
             layoutIndividualSection.setVisibility(View.GONE);
             layoutTeamSection.setVisibility(View.VISIBLE);
@@ -119,9 +116,9 @@ public class EventRegistrationFragment extends Fragment {
 
             layoutTeamSection.setVisibility(View.VISIBLE);
 
-            // ==========================
+
             // TEAM LEADER SECTION
-            // ==========================
+
 
             TextView leaderTitle = new TextView(getContext());
             leaderTitle.setText("Team Leader Details");
@@ -152,9 +149,9 @@ public class EventRegistrationFragment extends Fragment {
             teamMemberInputs.add(leaderMap);
 
 
-            // ==========================
+
             // CO-LEADER SECTION
-            // ==========================
+
 
             TextView coTitle = new TextView(getContext());
             coTitle.setText("Co-Leader Details");
@@ -182,9 +179,8 @@ public class EventRegistrationFragment extends Fragment {
             teamMemberInputs.add(coLeaderMap);
 
 
-            // ==========================
-// MEMBERS SECTION
-// ==========================
+            // MEMBERS SECTION
+
 
             TextView memberTitle = new TextView(getContext());
             memberTitle.setText("Members");
@@ -196,7 +192,6 @@ public class EventRegistrationFragment extends Fragment {
 
             for (int i = 1; i <= remainingMembers; i++) {
 
-                // 🔥 ADD TITLE FOR EACH MEMBER
                 TextView memberHeader = new TextView(getContext());
                 memberHeader.setText("Member " + i + " Details");
                 memberHeader.setTextSize(15);
@@ -243,9 +238,6 @@ public class EventRegistrationFragment extends Fragment {
         return editText;
     }
 
-    // ==============================
-    // REST OF YOUR ORIGINAL LOGIC
-    // ==============================
 
     private void submitForm() {
 
@@ -349,7 +341,6 @@ public class EventRegistrationFragment extends Fragment {
             regRef.setValue(model)
                     .addOnSuccessListener(a -> {
 
-                        // 🔥 ONLY NEW ADDITION (nothing else changed)
                         regRef.child("eventTitle").setValue(eventTitle);
 
                         navigateHome();

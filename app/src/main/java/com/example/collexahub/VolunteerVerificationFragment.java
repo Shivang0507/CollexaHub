@@ -83,16 +83,19 @@ public class VolunteerVerificationFragment extends Fragment {
         }
 
         String cleanQR = scannedQR.trim();
-        int firstUnderscore = cleanQR.indexOf("_");
 
-        if (firstUnderscore == -1) {
+        int first = cleanQR.indexOf("_");
+        int last = cleanQR.lastIndexOf("_");
+
+        if (first == -1 || last == -1 || first == last) {
             Toast.makeText(getContext(),
                     "Invalid QR Format",
                     Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String eventId = cleanQR.substring(0, firstUnderscore);
+        String eventId = cleanQR.substring(0, first);
+        String uid = cleanQR.substring(first + 1, last);
 
         FirebaseDatabase db = FirebaseDatabase.getInstance(DB_URL);
 
@@ -138,19 +141,14 @@ public class VolunteerVerificationFragment extends Fragment {
                         }
 
                         // ===== INDIVIDUAL =====
-                        for (DataSnapshot regSnap :
-                                eventSnap.child("registrations").getChildren()) {
 
-                            String qr =
-                                    regSnap.child("qrCode")
-                                            .getValue(String.class);
+                        DataSnapshot regSnap = eventSnap
+                                .child("registrations")
+                                .child(uid);
 
-                            if (qr != null &&
-                                    cleanQR.equalsIgnoreCase(qr.trim())) {
-
-                                showIndividualDetails(regSnap, eventTitle, paid);
-                                return;
-                            }
+                        if (regSnap.exists()) {
+                            showIndividualDetails(regSnap, eventTitle, paid);
+                            return;
                         }
 
                         Toast.makeText(getContext(),

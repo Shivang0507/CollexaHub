@@ -95,12 +95,10 @@ public class EventManagementFragment extends Fragment {
 
                     @Override
                     public void onRegisterClick(EventModel event) {
-                        // Not needed here
                     }
 
                     @Override
                     public void onMyQRClick(String qrCode) {
-                        // Not needed here
                     }
 
                     @Override
